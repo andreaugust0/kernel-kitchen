@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sincronismo · Chef Escalonador</title>
+  <!-- estilo.css é o estilo comum das telas (Pessoa 2). sincronismo.css só tem o que é desta tela. -->
+  <link rel="stylesheet" href="estilo.css">
+  <link rel="stylesheet" href="sincronismo.css">
+</head>
+<body class="sinc">
+  <header class="topo">
+    <a class="marca" href="index.html">Chef Escalonador</a>
+    <nav class="menu" aria-label="Telas do jogo">
+      <a href="index.html">Início</a>
+      <a href="aula.html">Modo Aula</a>
+      <a href="comparacao.html">Comparação</a>
+      <a href="sincronismo.html" aria-current="page">Sincronismo</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Um forno, dois cozinheiros</h1>
+      <p>
+        O forno só cabe um prato por vez. Ele é o <strong>recurso compartilhado</strong>, e usar o forno é a
+        <strong>região crítica</strong>. Rode com o mutex desligado e depois ligado para ver a diferença.
+      </p>
+    </section>
+
+    <section class="controles" aria-label="Controles">
+      <label class="chave">
+        <input type="checkbox" id="mutex">
+        <span class="chave-trilho" aria-hidden="true"><span class="chave-bolinha"></span></span>
+        <span id="rotulo-mutex">Mutex desligado</span>
+      </label>
+      <div class="botoes">
+        <button id="btn-voltar" type="button">&larr; Passo anterior</button>
+        <button id="btn-proximo" type="button" class="principal">Próximo passo &rarr;</button>
+        <button id="btn-auto" type="button">Reproduzir</button>
+        <button id="btn-reiniciar" type="button">Reiniciar</button>
+      </div>
+      <span id="passo" class="passo">Passo 0</span>
+    </section>
+
+    <section class="cozinha" aria-label="Cozinha">
+      <article class="cozinheiro" id="coz-A">
+        <header>
+          <h2>Cozinheira Ana</h2>
+          <span class="coz-prato">Prato: pizza</span>
+        </header>
+        <p class="coz-estado"></p>
+        <ol class="coz-codigo"></ol>
+        <p class="coz-resultado"></p>
+      </article>
+
+      <div class="forno" id="forno">
+        <h2>Forno</h2>
+        <div class="forno-porta">
+          <div id="forno-pratos" class="forno-pratos"></div>
+        </div>
+        <p id="forno-status" class="forno-status">Livre</p>
+        <p id="forno-trava" class="forno-trava" hidden></p>
+        <p id="forno-fila" class="forno-fila" hidden></p>
+      </div>
+
+      <article class="cozinheiro" id="coz-B">
+        <header>
+          <h2>Cozinheiro Beto</h2>
+          <span class="coz-prato">Prato: lasanha</span>
+        </header>
+        <p class="coz-estado"></p>
+        <ol class="coz-codigo"></ol>
+        <p class="coz-resultado"></p>
+      </article>
+    </section>
+
+    <p id="mensagem" class="mensagem" aria-live="polite"></p>
+
+    <section class="placar" aria-label="Placar">
+      <div><span id="prontos">0</span> pratos prontos</div>
+      <div><span id="estragados">0</span> pratos estragados</div>
+    </section>
+
+    <p id="resumo" class="resumo" hidden></p>
+
+    <section class="conceitos">
+      <h2>O que esta tela mostra</h2>
+      <dl>
+        <dt>Região crítica</dt>
+        <dd>Trecho em que o cozinheiro usa o forno. Só um pode estar nele por vez.</dd>
+        <dt>Condição de corrida</dt>
+        <dd>
+          Sem o mutex, "olhar se está livre" e "colocar o prato" são dois passos separados. Se o escalonador
+          troca de cozinheiro entre eles, os dois veem o forno livre e os dois colocam o prato.
+        </dd>
+        <dt>Mutex (exclusão mútua)</dt>
+        <dd>
+          Uma trava. <code>lock</code> pega a trava ou bloqueia quem chegar depois; <code>unlock</code> solta a
+          trava e acorda o próximo da fila.
+        </dd>
+        <dt>Bloqueado</dt>
+        <dd>
+          Estado do processo que espera um recurso. Ele sai da disputa pela vez de executar até ser acordado, por isso
+          o outro cozinheiro executa vários passos seguidos.
+        </dd>
+      </dl>
+      <p class="dica">Dica: as setas &larr; e &rarr; do teclado também avançam e voltam.</p>
+    </section>
+  </main>
+
+  <script src="sincronismo.js"></script>
+</body>
+</html>
