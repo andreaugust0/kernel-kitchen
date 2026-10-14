@@ -1,0 +1,495 @@
+/* Estilos da página inicial (Pessoa 3).
+   Tudo fica dentro de body.inicio para não interferir em outras páginas.
+   Herda variáveis de estilo.css se existirem, ou usa os padrões do projeto. */
+
+body.inicio {
+  --fundo: var(--cor-fundo, #fbf6ef);
+  --superficie: var(--cor-superficie, #ffffff);
+  --texto: var(--cor-texto, #2b2118);
+  --texto-suave: var(--cor-texto-suave, #6f6257);
+  --borda: var(--cor-borda, #e6dccf);
+  --destaque: var(--cor-destaque, #c2410c);
+  --destaque-fundo: #fff4ed;
+  --ok: #15803d;
+  --ok-fundo: #e8f5ec;
+  --azul: #1d4ed8;
+  --azul-fundo: #eff6ff;
+
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+.inicio * {
+  box-sizing: border-box;
+}
+
+/* Topo e navegação comum */
+.inicio .topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.inicio .marca {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--destaque);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inicio .menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inicio .menu a {
+  padding: 7px 14px;
+  border-radius: 8px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.inicio .menu a:hover {
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+.inicio .menu a[aria-current="page"] {
+  background: var(--destaque);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.inicio main {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+/* Hero Section */
+.inicio .hero {
+  text-align: center;
+  padding: 40px 16px 28px;
+}
+
+.inicio .emblema {
+  display: inline-block;
+  padding: 4px 14px;
+  background: var(--destaque-fundo);
+  color: var(--destaque);
+  border: 1px solid #fbdcd0;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.inicio .hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+  color: var(--texto);
+}
+
+.inicio .hero .subtitulo {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  color: var(--texto-suave);
+  line-height: 1.5;
+}
+
+/* Título de Seções */
+.inicio .secao-titulo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+.inicio .secao-subtitulo {
+  text-align: center;
+  color: var(--texto-suave);
+  margin: 0 0 28px;
+  font-size: 1.05rem;
+}
+
+/* Grade de Telas (Cards dos 3 botões) */
+.inicio .secao-telas {
+  margin: 32px 0 56px;
+}
+
+.inicio .grade-telas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.inicio .cartao-tela {
+  background: var(--superficie);
+  border: 2px solid var(--borda);
+  border-radius: 18px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.inicio .cartao-tela:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(43, 33, 24, 0.08);
+  border-color: #d1c1b1;
+}
+
+.inicio .cartao-tela.destaque {
+  border-color: var(--destaque);
+  position: relative;
+  box-shadow: 0 8px 24px rgba(194, 65, 12, 0.12);
+}
+
+.inicio .cartao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.inicio .icone-tela {
+  font-size: 2rem;
+}
+
+.inicio .tag-tela {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  background: #f1eae1;
+  color: var(--texto-suave);
+  border-radius: 999px;
+}
+
+.inicio .tag-destaque {
+  background: var(--destaque-fundo);
+  color: var(--destaque);
+}
+
+.inicio .cartao-tela h3 {
+  font-size: 1.45rem;
+  margin: 0 0 10px;
+  color: var(--texto);
+}
+
+.inicio .cartao-tela p {
+  color: var(--texto-suave);
+  font-size: 0.95rem;
+  margin: 0 0 18px;
+  flex-grow: 0;
+}
+
+.inicio .lista-conceitos {
+  margin: 0 0 24px;
+  padding-left: 20px;
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  flex-grow: 1;
+}
+
+.inicio .lista-conceitos li {
+  margin-bottom: 6px;
+}
+
+.inicio .btn-tela {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  text-decoration: none;
+  background: #f4ede3;
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  transition: all 0.15s ease;
+  margin-top: auto;
+}
+
+.inicio .btn-tela:hover {
+  background: var(--destaque-fundo);
+  border-color: var(--destaque);
+  color: var(--destaque);
+}
+
+.inicio .btn-principal {
+  background: var(--destaque);
+  border-color: var(--destaque);
+  color: #ffffff;
+}
+
+.inicio .btn-principal:hover {
+  background: #a93708;
+  border-color: #a93708;
+  color: #ffffff;
+}
+
+/* Analogia */
+.inicio .secao-analogia {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 36px 32px;
+  margin-bottom: 56px;
+}
+
+.inicio .cabecalho-bloco {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 32px;
+}
+
+.inicio .cabecalho-bloco h2 {
+  font-size: 1.8rem;
+  margin: 0 0 8px;
+}
+
+.inicio .cabecalho-bloco p {
+  color: var(--texto-suave);
+  margin: 0;
+}
+
+.inicio .grade-analogias {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.inicio .item-analogia {
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 20px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inicio .analogia-rotulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.inicio .analogia-icone {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+.inicio .item-analogia h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--destaque);
+}
+
+.inicio .analogia-seta {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  margin: 6px 0;
+}
+
+.inicio .analogia-so {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--texto);
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.inicio .item-analogia p {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Ciclo de vida / Estados */
+.inicio .secao-estados {
+  margin-bottom: 56px;
+  text-align: center;
+}
+
+.inicio .secao-estados h2 {
+  font-size: 1.8rem;
+  margin: 0 0 6px;
+}
+
+.inicio .esteira-estados {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 28px 0 16px;
+}
+
+.inicio .passo-estado {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 16px 18px;
+  width: 200px;
+  text-align: left;
+}
+
+.inicio .passo-estado.destaque-estado {
+  border-color: var(--destaque);
+  background: var(--destaque-fundo);
+}
+
+.inicio .badge-estado {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--destaque);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.inicio .passo-estado strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.inicio .passo-estado p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+  line-height: 1.4;
+}
+
+.inicio .seta-fluxo {
+  font-size: 1.6rem;
+  color: var(--texto-suave);
+  font-weight: 700;
+}
+
+.inicio .nota-bloqueado {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  margin-top: 14px;
+}
+
+/* Tabela Resumo dos Algoritmos */
+.inicio .secao-algoritmos {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.inicio .secao-algoritmos h2 {
+  font-size: 1.8rem;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.inicio .tabela-container {
+  overflow-x: auto;
+}
+
+.inicio .tabela-resumo {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.inicio .tabela-resumo th,
+.inicio .tabela-resumo td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--borda);
+}
+
+.inicio .tabela-resumo th {
+  background: var(--fundo);
+  color: var(--texto-suave);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.inicio .tabela-resumo tr:last-child td {
+  border-bottom: none;
+}
+
+/* Rodapé */
+.inicio .rodape {
+  border-top: 1px solid var(--borda);
+  background: var(--superficie);
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.inicio .rodape p {
+  margin: 4px 0;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .inicio .grade-telas {
+    grid-template-columns: 1fr;
+  }
+  .inicio .grade-analogias {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .inicio .grade-analogias {
+    grid-template-columns: 1fr;
+  }
+  .inicio .hero h1 {
+    font-size: 2.1rem;
+  }
+  .inicio .esteira-estados {
+    flex-direction: column;
+  }
+  .inicio .passo-estado {
+    width: 100%;
+  }
+  .inicio .seta-fluxo {
+    transform: rotate(90deg);
+  }
+}
