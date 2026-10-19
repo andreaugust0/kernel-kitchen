@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modo Aula · Chef Escalonador</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+  .cozinha { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .area { background: #fff4e0; border: 2px dashed var(--borda); border-radius: 12px; padding: .7rem; min-height: 150px; }
+  .area h2 { font-size: 1rem; }
+  .area.fogao { background: #ffe3d6; border-color: var(--destaque); }
+  .area.entregues { background: #e3f5f2; }
+  .cartoes { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .relogio { font-size: 1.6rem; font-weight: 700; margin-left: auto; }
+  .medias { background: #e3f5f2; border-radius: 10px; padding: .7rem 1rem; margin-top: 1rem; }
+  @media (max-width: 720px) { .cozinha { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="index.html">Chef Escalonador</a>
+  <nav class="menu" aria-label="Telas do jogo">
+    <a href="index.html">Início</a>
+    <a href="aula.html" aria-current="page">Modo Aula</a>
+    <a href="comparacao.html">Comparação</a>
+    <a href="sincronismo.html">Sincronismo</a>
+  </nav>
+</header>
+<main>
+  <h1>Modo Aula</h1>
+  <section class="controles">
+    <label>Algoritmo <select id="sel-alg"></select></label>
+    <label>Cenário <select id="sel-cen"></select></label>
+    <label id="campo-quantum" hidden>Quantum <input type="number" id="quantum" min="1" value="2" style="width:5rem"></label>
+    <div class="botoes">
+      <button id="btn-voltar" type="button">&larr; Passo anterior</button>
+      <button id="btn-proximo" type="button" class="principal">Próximo passo &rarr;</button>
+      <button id="btn-auto" type="button">Reproduzir</button>
+      <button id="btn-reiniciar" type="button">Reiniciar</button>
+    </div>
+    <div class="relogio">t = <span id="relogio">0</span></div>
+  </section>
+
+  <section class="cozinha">
+    <div class="area"><h2>Balcão de comandas (pronto)</h2><div id="balcao" class="cartoes"></div></div>
+    <div class="area fogao"><h2>Fogão (CPU)</h2><div id="fogao" class="cartoes"></div></div>
+    <div class="area entregues"><h2>Pedidos entregues</h2><div id="entregues" class="cartoes"></div></div>
+  </section>
+
+  <p id="mensagem" class="mensagem" aria-live="polite"></p>
+  <div id="gantt"></div>
+  <div id="medias" class="medias" hidden></div>
+</main>
+<script src="algoritmos.js"></script>
+<script src="cenarios.js"></script>
+<script src="metricas.js"></script>
+<script src="gantt.js"></script>
+<script src="aula.js"></script>
+</body>
+</html>
