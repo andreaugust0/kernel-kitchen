@@ -150,4 +150,3 @@ if (typeof document !== 'undefined' && document.getElementById('sel-alg')) {
   carregar();
 }
 if (typeof module !== 'undefined') module.exports = { estadoEm, cozinhado, explicar, fimTotal };
-// teste
