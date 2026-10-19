@@ -1,47 +1,530 @@
-/* estilo.css - compartilhado pelas telas (Pessoa 2) */
+/* Estilo comum das telas. Segue o design system de docs/design.md:
+   paleta monocromática, cartões brancos com borda fina, botões e campos em
+   pílula (raio 18px) e cartões com raio 24px. O vermelho fica reservado para
+   erro e para o "ao vivo". As cores de pedidos e cozinheiros são dados, não
+   decoração, e ficam aqui para todas as telas usarem a mesma paleta. */
+
 :root {
-  --fundo: #fff8ee; --papel: #ffffff; --tinta: #2b2a33; --suave: #6b6a75;
-  --destaque: #d9480f; --borda: #e6dccb; --verde: #2a9d8f;
-  --fonte: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --color-canvas: #f5f5f5;
+  --color-paper: #ffffff;
+  --color-surface-alt: #fafafa;
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #171717;
+  --color-mid-gray: #737373;
+  --color-hairline: #e5e5e5;
+  --color-hairline-forte: #d4d4d4;
+  --color-ember: #e7000b;
+  --color-ember-soft: #fef2f2;
+
+  --font-geist: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  --radius-small: 6px;
+  --radius-nested: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 18px;
+  --radius-cards: 24px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+
+  /* Paleta categórica dos dados, em ordem fixa (validada para daltonismo) */
+  --serie-1: #2a78d6;
+  --serie-2: #eb6834;
+  --serie-3: #1baf7a;
+  --serie-4: #eda100;
+  --serie-5: #e87ba4;
+  --serie-6: #008300;
+  --serie-7: #6250d6;
+  --serie-8: #e34948;
+
+  /* Cozinheiros do Sincronismo */
+  --cor-A: var(--serie-2);
+  --cor-B: var(--serie-1);
 }
-* { box-sizing: border-box; }
-body { margin: 0; font-family: var(--fonte); background: var(--fundo); color: var(--tinta); line-height: 1.45; }
-main { max-width: 1100px; margin: 0 auto; padding: 1rem; }
-h1, h2 { margin: .2rem 0 .5rem; }
 
-.topo { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-  gap: .5rem; padding: .7rem 1.2rem; background: var(--tinta); }
-.marca { color: #ffd8a8; font-weight: 700; font-size: 1.2rem; text-decoration: none; }
-.menu a { color: #fff; text-decoration: none; margin-left: 1rem; padding-bottom: 2px; }
-.menu a[aria-current="page"] { border-bottom: 2px solid #ffd8a8; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-button, select, input[type=number] { font: inherit; padding: .45rem .8rem; border: 1px solid var(--borda);
-  border-radius: 8px; background: var(--papel); color: var(--tinta); }
-button { cursor: pointer; }
-button:hover:not(:disabled) { border-color: var(--destaque); }
-button:disabled { opacity: .45; cursor: default; }
-button.principal { background: var(--destaque); border-color: var(--destaque); color: #fff; }
-.botoes { display: flex; gap: .5rem; flex-wrap: wrap; }
-.controles { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; margin: 1rem 0; }
-.controles label { display: flex; flex-direction: column; font-size: .85rem; color: var(--suave); gap: .2rem; }
+/* O JavaScript esconde elementos com o atributo hidden; nenhum display pode vencer isso */
+[hidden] {
+  display: none !important;
+}
 
-.mensagem { background: var(--papel); border-left: 5px solid var(--destaque); border-radius: 8px;
-  padding: .7rem 1rem; min-height: 3rem; margin: 1rem 0; }
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-geist);
+  font-size: 14px;
+  line-height: 1.43;
+  font-feature-settings: "ss01" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* cartão de pedido (usado nas três telas) */
-.cartao { background: var(--papel); border: 1px solid var(--borda); border-left: 8px solid var(--cor, #999);
-  border-radius: 10px; padding: .5rem .7rem; min-width: 130px; box-shadow: 0 1px 3px #0001; }
-.cartao strong { display: block; }
-.cartao small { color: var(--suave); display: block; }
-.cartao .barra-resto { height: 5px; background: #eee; border-radius: 3px; margin-top: .3rem; }
-.cartao .barra-resto i { display: block; height: 100%; background: var(--cor); border-radius: 3px; }
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-ink);
+}
 
-/* Gantt */
-.gantt { margin: .5rem 0 2rem; }
-.gantt-barra { position: relative; height: 44px; background: repeating-linear-gradient(90deg,#f1e9da 0 1px,transparent 1px 8px);
-  border: 1px solid var(--borda); border-radius: 6px; overflow: hidden; }
-.gantt-bloco { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 700; font-size: .85rem; border-right: 2px solid #fff8; overflow: hidden;
-  text-shadow: 0 1px 2px #0006; transition: width .25s; }
-.gantt-regua { position: relative; height: 1.4rem; margin-top: 4px; }
-.gantt-regua span { position: absolute; transform: translateX(-50%); font-size: .75rem; color: var(--suave); }
+p {
+  margin: 0;
+}
+
+code, kbd {
+  font-family: var(--font-mono);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Topo: barra fosca fixa com a marca e o menu em pílulas */
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+/* Marca: um quadrado preto com a "chama piloto" do fogão no centro */
+.marca::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-small);
+  background: var(--color-ember);
+  box-shadow: inset 0 0 0 7px var(--color-ink);
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+  background: var(--color-canvas);
+  border-radius: var(--radius-pill);
+}
+
+.menu a {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  color: var(--color-mid-gray);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.menu a:hover {
+  color: var(--color-ink);
+}
+
+.menu a[aria-current="page"] {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-card);
+}
+
+/* Área principal e títulos de página */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.intro {
+  margin-bottom: 24px;
+}
+
+.intro h1 {
+  font-size: 36px;
+  line-height: 1.11;
+  letter-spacing: -0.9px;
+}
+
+.intro p {
+  margin-top: 8px;
+  max-width: 68ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-mid-gray);
+}
+
+.intro p strong {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* Rótulo pequeno em caixa alta (legendas de campos, cabeçalhos de tabela) */
+.rotulo {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-mid-gray);
+}
+
+/* Botões em pílula: secundário (padrão), primário escuro e contorno */
+button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+}
+
+button:hover:not(:disabled),
+.btn:hover {
+  background: #ebebeb;
+}
+
+button:active:not(:disabled),
+.btn:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primario,
+button.principal {
+  background: var(--color-ink);
+  color: #fafafa;
+}
+
+.btn-primario:hover,
+button.principal:hover:not(:disabled) {
+  background: #262626;
+}
+
+.btn-contorno {
+  background: transparent;
+  border-color: var(--color-hairline);
+}
+
+.btn-contorno:hover:not(:disabled) {
+  background: var(--color-canvas);
+}
+
+/* Campos: fundo cinza suave, sem borda em repouso */
+input[type="number"],
+select {
+  height: 36px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-ink);
+  background-color: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  background-color: var(--color-paper);
+  border-color: var(--color-hairline-forte);
+}
+
+input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Etiquetas em pílula */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--color-ink-soft);
+  background: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-small);
+}
+
+/* Tabelas dentro de cartões */
+.tabela-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  /* separate (e não collapse) para o cabeçalho fixo das tabelas roláveis não vazar */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-mid-gray);
+  background: var(--color-paper);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+th small {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  color: #a3a3a3;
+}
+
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: var(--color-surface-alt);
+}
+
+/* Rodapé */
+.rodape {
+  padding: 28px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-mid-gray);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.rodape strong {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .topo {
+    padding: 12px 16px;
+  }
+  main {
+    padding: 28px 16px 48px;
+  }
+  .intro h1 {
+    font-size: 30px;
+    letter-spacing: -0.75px;
+  }
+}
+
+/* Modo Aula (Pessoa 2): cartões de pedido, mensagem do passo e o Gantt do
+   gantt.js. Fica preso a body.aula e a .gantt para não mexer nas outras telas.
+   Os nomes antigos de variável (--fundo, --borda...) apontam para o design system. */
+.aula {
+  --fundo: var(--color-canvas);
+  --papel: var(--color-paper);
+  --tinta: var(--color-ink);
+  --suave: var(--color-mid-gray);
+  --destaque: var(--color-ink);
+  --borda: var(--color-hairline-forte);
+  --verde: var(--serie-3);
+}
+
+.aula h1 {
+  font-size: 36px;
+  line-height: 1.11;
+  letter-spacing: -0.9px;
+}
+
+.aula .controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  margin: 24px 0 16px;
+}
+
+.aula .controles label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-mid-gray);
+}
+
+.aula .botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aula .area {
+  border-radius: var(--radius-cards);
+}
+
+.aula .mensagem {
+  min-height: 48px;
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.aula .medias {
+  border-radius: var(--radius-xl);
+}
+
+/* Cartão de pedido: a borda colorida é a cor do pedido no Gantt */
+.aula .cartao {
+  min-width: 130px;
+  padding: 8px 12px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-left: 6px solid var(--cor, var(--color-mid-gray));
+  border-radius: var(--radius-nested);
+  box-shadow: var(--shadow-card);
+}
+
+.aula .cartao strong {
+  display: block;
+}
+
+.aula .cartao small {
+  display: block;
+  color: var(--color-mid-gray);
+}
+
+.aula .cartao .barra-resto {
+  height: 5px;
+  margin-top: 6px;
+  background: var(--color-canvas);
+  border-radius: 999px;
+}
+
+.aula .cartao .barra-resto i {
+  display: block;
+  height: 100%;
+  background: var(--cor);
+  border-radius: 999px;
+}
+
+/* Gantt desenhado pelo gantt.js */
+.gantt {
+  margin: 8px 0 32px;
+}
+
+.gantt-barra {
+  position: relative;
+  height: 44px;
+  overflow: hidden;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-nested);
+}
+
+.gantt .gantt-bloco {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: width 0.25s;
+}
+
+.gantt-regua {
+  position: relative;
+  height: 22px;
+  margin-top: 4px;
+}
+
+.gantt-regua span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-mid-gray);
+}

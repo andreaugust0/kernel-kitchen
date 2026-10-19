@@ -1,81 +1,98 @@
 // comparacao.js - Tela de Comparação de Algoritmos (Pessoa 3)
-// Batalha dos quatro algoritmos (FCFS, SJF, Prioridade e Round Robin) lado a lado no mesmo cenário.
-// Conecta cenarios.js, algoritmos.js, metricas.js e o desenhador de Gantt da Pessoa 2.
+// Batalha dos quatro algoritmos (FCFS, SJF, Prioridade e Round Robin) lado a lado, com pedidos feitos na hora.
+// Conecta algoritmos.js e metricas.js; os Gantts usam um desenho próprio (ver desenharGanttComparacao).
 
 (function () {
   "use strict";
 
-  const CORES_PEDIDOS = {
-    P1: "#c2410c", 
-    P2: "#1d4ed8", 
-    P3: "#059669", 
-    P4: "#d97706", 
-    P5: "#7c3aed", 
-    P6: "#db2777", 
-    P7: "#0891b2", 
-    P8: "#4b5563", 
-  };
+  // Paleta categórica de estilo.css, em ordem fixa: P1 usa a cor 1, P2 a cor 2...
+  // Do 9º pedido em diante as cores se repetem com hachura, para nenhum pedido
+  // ficar igual a outro. O nome do pedido vai sempre escrito no bloco.
+  const CORES_PEDIDOS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"];
+  // Laranja, verde-água, amarelo e rosa são claros demais para texto branco
+  const CORES_COM_TEXTO_ESCURO = new Set([1, 2, 3, 4]);
+  const HACHURAS = [
+    "",
+    "repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0 3px, transparent 3px 7px)",
+    "repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0 3px, transparent 3px 7px)",
+  ];
 
-  function obterCorPedido(id) {
-    return CORES_PEDIDOS[id] || "#64748b";
+  function indicePedido(id) {
+    const numero = parseInt(String(id).slice(1), 10);
+    return isNaN(numero) || numero < 1 ? 0 : numero - 1;
   }
 
-  // Se desenharGantt não foi carregado pelo gantt.js da Pessoa 2,
-  // provemos a implementação padrão compatível com a especificação do contrato.
-  if (typeof window.desenharGantt !== "function") {
-    window.desenharGantt = function (elemento, linhaDoTempo, ateInstante, tempoTotalMaximo) {
-      const container = typeof elemento === "string" ? document.getElementById(elemento) : elemento;
-      if (!container) return;
+  function obterCorPedido(id) {
+    return CORES_PEDIDOS[indicePedido(id) % CORES_PEDIDOS.length];
+  }
 
-      container.innerHTML = "";
+  function obterTextoPedido(id) {
+    return CORES_COM_TEXTO_ESCURO.has(indicePedido(id) % CORES_PEDIDOS.length) ? "#0a0a0a" : "#ffffff";
+  }
 
-      // Filtra até o instante se especificado (usado no passo a passo do Modo Aula)
-      let trechos = linhaDoTempo || [];
-      if (typeof ateInstante === "number") {
-        trechos = trechos
-          .filter((t) => t.inicio < ateInstante)
-          .map((t) => ({
-            ...t,
-            fim: Math.min(t.fim, ateInstante),
-          }));
-      }
+  // Fundo completo (hachura + cor), para usar em style.background
+  function obterFundoPedido(id) {
+    const volta = Math.floor(indicePedido(id) / CORES_PEDIDOS.length) % HACHURAS.length;
+    const cor = obterCorPedido(id);
+    return HACHURAS[volta] ? `${HACHURAS[volta]}, ${cor}` : cor;
+  }
 
-      // Se nenhum tempo total foi passado, usa o término do último trecho da própria linha
-      const tempoTotal =
-        typeof tempoTotalMaximo === "number" && tempoTotalMaximo > 0
-          ? tempoTotalMaximo
-          : Math.max(...trechos.map((t) => t.fim), 1);
+  // Desenho próprio da Comparação, no lugar do desenharGantt do gantt.js: o modo
+  // ao vivo precisa de uma escala fixa (tempoTotalMaximo) igual nos quatro Gantts,
+  // da régua única embaixo deles e das cores com hachura da paleta acima.
+  function desenharGanttComparacao(elemento, linhaDoTempo, ateInstante, tempoTotalMaximo) {
+    const container = typeof elemento === "string" ? document.getElementById(elemento) : elemento;
+    if (!container) return;
 
-      // Renderiza cada trecho do pedido
-      trechos.forEach((trecho) => {
-        const duracao = trecho.fim - trecho.inicio;
-        if (duracao <= 0) return;
+    container.innerHTML = "";
 
-        const leftPercent = (trecho.inicio / tempoTotal) * 100;
-        const widthPercent = (duracao / tempoTotal) * 100;
+    // Filtra até o instante se especificado (usado no passo a passo do Modo Aula)
+    let trechos = linhaDoTempo || [];
+    if (typeof ateInstante === "number") {
+      trechos = trechos
+        .filter((t) => t.inicio < ateInstante)
+        .map((t) => ({
+          ...t,
+          fim: Math.min(t.fim, ateInstante),
+        }));
+    }
 
-        const bloco = document.createElement("div");
-        bloco.className = "gantt-bloco";
-        bloco.style.left = `${leftPercent}%`;
-        bloco.style.width = `${widthPercent}%`;
-        bloco.style.backgroundColor = obterCorPedido(trecho.pedido);
-        bloco.setAttribute("data-pedido", trecho.pedido);
+    // Se nenhum tempo total foi passado, usa o término do último trecho da própria linha
+    const tempoTotal =
+      typeof tempoTotalMaximo === "number" && tempoTotalMaximo > 0
+        ? tempoTotalMaximo
+        : Math.max(...trechos.map((t) => t.fim), 1);
 
-        // Tooltip nativo acessível com detalhes da execução
-        bloco.title = `${trecho.pedido} | Instante ${trecho.inicio} até ${trecho.fim} (Duração: ${duracao})`;
+    // Renderiza cada trecho do pedido
+    trechos.forEach((trecho) => {
+      const duracao = trecho.fim - trecho.inicio;
+      if (duracao <= 0) return;
 
-        const texto = document.createElement("span");
-        texto.className = "gantt-bloco-texto";
-        texto.textContent = trecho.pedido;
-        bloco.appendChild(texto);
+      const leftPercent = (trecho.inicio / tempoTotal) * 100;
+      const widthPercent = (duracao / tempoTotal) * 100;
 
-        // Efeito de destaque coordenado ao passar o mouse
-        bloco.addEventListener("mouseenter", () => destacarPedido(trecho.pedido));
-        bloco.addEventListener("mouseleave", () => limparDestaques());
+      const bloco = document.createElement("div");
+      bloco.className = "gantt-bloco";
+      bloco.style.left = `${leftPercent}%`;
+      bloco.style.width = `${widthPercent}%`;
+      bloco.style.background = obterFundoPedido(trecho.pedido);
+      bloco.style.color = obterTextoPedido(trecho.pedido);
+      bloco.setAttribute("data-pedido", trecho.pedido);
 
-        container.appendChild(bloco);
-      });
-    };
+      // Tooltip nativo acessível com detalhes da execução
+      bloco.title = `${trecho.pedido} | Instante ${trecho.inicio} até ${trecho.fim} (Duração: ${duracao})`;
+
+      const texto = document.createElement("span");
+      texto.className = "gantt-bloco-texto";
+      texto.textContent = trecho.pedido;
+      bloco.appendChild(texto);
+
+      // Efeito de destaque coordenado ao passar o mouse
+      bloco.addEventListener("mouseenter", () => destacarPedido(trecho.pedido));
+      bloco.addEventListener("mouseleave", () => limparDestaques());
+
+      container.appendChild(bloco);
+    });
   }
 
   // Destaque visual unificado entre tabelas, legendas e blocos de Gantt
@@ -92,11 +109,8 @@
   }
 
   // Elementos do DOM
-  const seletorCenario = document.getElementById("seletor-cenario");
   const inputQuantum = document.getElementById("quantum");
   const rotuloQuantumRR = document.getElementById("rotulo-quantum-rr");
-  const cenarioDescricao = document.getElementById("cenario-descricao");
-  const cenarioConclusao = document.getElementById("cenario-conclusao");
   const corpoTabelaPedidos = document.getElementById("corpo-tabela-pedidos");
   const legendaPedidos = document.getElementById("legenda-pedidos");
   const corpoTabelaMetricas = document.getElementById("corpo-tabela-metricas");
@@ -130,45 +144,7 @@
     return `<span class="badge-prioridade">${prio}</span>`;
   }
 
-  // Inicializa o seletor com os cenários disponíveis
-  function inicializarCenarios() {
-    const lista = typeof CENARIOS !== "undefined" ? CENARIOS : [];
-    seletorCenario.innerHTML = "";
-
-    lista.forEach((cenario) => {
-      const opcao = document.createElement("option");
-      opcao.value = cenario.id;
-      opcao.textContent = cenario.nome;
-      seletorCenario.appendChild(opcao);
-    });
-
-    if (lista.length > 0) {
-      seletorCenario.value = lista[0].id;
-    }
-  }
-
-  // Retorna o cenário ativo atualmente selecionado
-  function obterCenarioAtual() {
-    const lista = typeof CENARIOS !== "undefined" ? CENARIOS : [];
-    const id = seletorCenario.value;
-    const encontrado = lista.find((c) => c.id === id);
-    if (encontrado) return encontrado;
-
-    // Fallback caso a lista ainda não esteja carregada
-    if (typeof cenarioExemplo !== "undefined") {
-      return {
-        id: "exemplo",
-        nome: "Exemplo do contrato",
-        descricao: "Cenário de exemplo do contrato",
-        conclusao: "O SJF teve a menor espera média e o Round Robin a melhor resposta, mas a pior espera.",
-        pedidos: cenarioExemplo,
-      };
-    }
-
-    return { id: "vazio", nome: "Vazio", descricao: "", conclusao: "", pedidos: [] };
-  }
-
-  // Atualiza a tabela com a lista de pedidos do cenário selecionado
+  // Atualiza a tabela com a lista de pedidos feitos até agora
   function renderizarTabelaPedidos(pedidos) {
     corpoTabelaPedidos.innerHTML = "";
     legendaPedidos.innerHTML = "";
@@ -180,7 +156,7 @@
       tr.addEventListener("mouseleave", () => limparDestaques());
 
       tr.innerHTML = `
-        <td><span class="tag-pedido" style="background-color: ${obterCorPedido(p.id)}">${p.id}</span></td>
+        <td><span class="tag-pedido" style="background: ${obterFundoPedido(p.id)}; color: ${obterTextoPedido(p.id)}">${p.id}</span></td>
         <td><strong>${p.prato}</strong></td>
         <td>${p.chegada}</td>
         <td>${p.preparo} instantes</td>
@@ -193,7 +169,7 @@
       itemLegenda.className = "item-legenda";
       itemLegenda.setAttribute("data-pedido", p.id);
       itemLegenda.innerHTML = `
-        <span class="bolinha-legenda" style="background-color: ${obterCorPedido(p.id)}"></span>
+        <span class="bolinha-legenda" style="background: ${obterFundoPedido(p.id)}"></span>
         <span>${p.id} · ${p.prato}</span>
       `;
       itemLegenda.addEventListener("mouseenter", () => destacarPedido(p.id));
@@ -202,22 +178,24 @@
     });
   }
 
-  // Renderiza a régua de tempo sincronizada na parte inferior dos quatro Gantts
-  function renderizarReguaTempo(tempoTotal) {
+  // Renderiza a régua de tempo sincronizada na parte inferior dos quatro Gantts.
+  // "inicio" desloca a régua quando os Gantts mostram só uma janela do tempo.
+  function renderizarReguaTempo(tempoTotal, inicio = 0) {
     reguaTempo.innerHTML = "";
     if (tempoTotal <= 0) return;
 
     // Define o passo dos marcadores para evitar sobreposição em cenários longos
     const passo = tempoTotal > 30 ? 5 : tempoTotal > 15 ? 2 : 1;
+    const fim = inicio + tempoTotal;
 
-    for (let t = 0; t <= tempoTotal; t++) {
-      if (t % passo !== 0 && t !== tempoTotal) continue;
+    for (let t = Math.ceil(inicio); t <= fim; t++) {
+      if (t % passo !== 0 && t !== fim) continue;
 
       const ponto = document.createElement("div");
       ponto.className = "regua-ponto";
-      ponto.style.left = `${(t / tempoTotal) * 100}%`;
+      ponto.style.left = `${((t - inicio) / tempoTotal) * 100}%`;
 
-      const ehDestaque = t % (passo * 2) === 0 || t === 0 || t === tempoTotal;
+      const ehDestaque = t % (passo * 2) === 0 || t === 0 || t === fim;
 
       ponto.innerHTML = `
         <span class="regua-traco ${ehDestaque ? "marcador-principal" : ""}"></span>
@@ -227,34 +205,26 @@
     }
   }
 
-  // Função principal de atualização e renderização
-  function atualizarComparacao() {
-    const cenario = obterCenarioAtual();
-    const pedidos = cenario.pedidos || [];
-
-    // Lê e sanitiza o quantum (padrão do contrato = 2)
+  // Lê e sanitiza o quantum (padrão do contrato = 2)
+  function lerQuantum() {
     let quantum = parseInt(inputQuantum ? inputQuantum.value : "2", 10);
     if (isNaN(quantum) || quantum < 1) {
       quantum = 2;
     }
     if (rotuloQuantumRR) rotuloQuantumRR.textContent = `Quantum = ${quantum}`;
+    return quantum;
+  }
 
-    // Atualiza descrições textuais do cenário
-    cenarioDescricao.textContent = cenario.descricao || "";
-    cenarioConclusao.textContent = cenario.conclusao || "";
-
-    // 1. Renderiza pedidos de entrada
-    renderizarTabelaPedidos(pedidos);
-
-    // 2. Executa os 4 algoritmos
-    const linhas = {
+  function executarAlgoritmos(pedidos, quantum) {
+    return {
       fcfs: typeof fcfs === "function" ? fcfs(pedidos) : [],
       sjf: typeof sjf === "function" ? sjf(pedidos) : [],
       prioridade: typeof prioridade === "function" ? prioridade(pedidos) : [],
       rr: typeof roundRobin === "function" ? roundRobin(pedidos, quantum) : [],
     };
+  }
 
-    // 3. Calcula as métricas para cada algoritmo
+  function calcularTodasMetricas(pedidos, linhas) {
     const metricas = {};
     for (const [chave, linha] of Object.entries(linhas)) {
       if (typeof calcularMetricas === "function" && pedidos.length > 0 && linha.length > 0) {
@@ -263,46 +233,21 @@
         metricas[chave] = { mediaEspera: 0, mediaTurnaround: 0, mediaResposta: 0 };
       }
     }
+    return metricas;
+  }
 
-    // 4. Determina a escala de tempo compartilhada (tempoTotalMaximo)
-    // Garante que todos os 4 Gantts tenham rigorosamente a mesma proporção visual
-    let tempoTotalMaximo = 0;
-    Object.values(linhas).forEach((linha) => {
-      linha.forEach((t) => {
-        if (t.fim > tempoTotalMaximo) tempoTotalMaximo = t.fim;
-      });
-    });
-    if (tempoTotalMaximo === 0) tempoTotalMaximo = 1;
-
-    // 5. Desenha os 4 Gantts empilhados e preenche a ordem no fogão
-    const listaAlgoritmos = [
+  function listarAlgoritmos(quantum) {
+    return [
       { chave: "fcfs", nome: "FCFS" },
       { chave: "sjf", nome: "SJF" },
       { chave: "prioridade", nome: "Prioridade" },
       { chave: "rr", nome: `Round Robin (q=${quantum})` },
     ];
+  }
 
-    listaAlgoritmos.forEach(({ chave }) => {
-      const linha = linhas[chave];
-      const elGantt = elementosGantt[chave];
-      const elOrdem = elementosOrdem[chave];
-
-      // Desenha usando o desenharGantt (seja da Pessoa 2 ou fallback compatível)
-      if (typeof window.desenharGantt === "function" && elGantt) {
-        window.desenharGantt(elGantt, linha, undefined, tempoTotalMaximo);
-      }
-
-      // Atualiza texto com a ordem dos pedidos no fogão
-      if (elOrdem) {
-        const ordemTexto = linha.map((t) => t.pedido).join(", ");
-        elOrdem.textContent = ordemTexto ? `Ordem: ${ordemTexto}` : "Fogão livre";
-      }
-    });
-
-    // 6. Atualiza a régua de tempo inferior
-    renderizarReguaTempo(tempoTotalMaximo);
-
-    // 7. Encontra o menor valor (melhor desempenho) em cada coluna de métricas
+  // Tabela comparativa de métricas com destaque no menor valor (melhor) de cada coluna.
+  // "complemento" acrescenta um texto ao nome do algoritmo.
+  function renderizarTabelaMetricas(listaAlgoritmos, metricas, complemento = () => "") {
     const valoresEspera = listaAlgoritmos.map((a) => metricas[a.chave].mediaEspera);
     const valoresTurnaround = listaAlgoritmos.map((a) => metricas[a.chave].mediaTurnaround);
     const valoresResposta = listaAlgoritmos.map((a) => metricas[a.chave].mediaResposta);
@@ -313,7 +258,6 @@
 
     const quaseIgual = (a, b) => Math.abs(a - b) < 0.001;
 
-    // 8. Renderiza a tabela comparativa de métricas com destaque no melhor valor
     corpoTabelaMetricas.innerHTML = "";
 
     listaAlgoritmos.forEach(({ chave, nome }) => {
@@ -324,7 +268,7 @@
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="col-algoritmo">${nome}</td>
+        <td class="col-algoritmo">${nome}${complemento(chave)}</td>
         <td class="${ehMelhorEspera ? "melhor-valor" : ""}">
           ${formatarNumero(m.mediaEspera)}
           ${ehMelhorEspera ? '<span class="badge-melhor" title="Menor tempo de espera médio">⭐ Melhor</span>' : ""}
@@ -342,30 +286,314 @@
     });
   }
 
-  // Eventos de interação: troca dinâmica sem recarregar a página
-  seletorCenario.addEventListener("change", atualizarComparacao);
+  // ==================== Cozinha ao vivo ====================
+  // O relógio anda sozinho e a turma faz pedidos na hora. A cada pedido novo
+  // os quatro algoritmos são recalculados com tudo o que chegou até agora.
+  // Como nenhum deles olha para pedidos que ainda não chegaram, o trecho já
+  // desenhado do Gantt nunca muda: a tela só revela a linha do tempo até o
+  // instante atual.
+
+  const CARDAPIO = [
+    { prato: "Café", preparo: 1 },
+    { prato: "Suco", preparo: 1 },
+    { prato: "Torrada", preparo: 2 },
+    { prato: "Salada", preparo: 2 },
+    { prato: "Omelete", preparo: 3 },
+    { prato: "Bolo", preparo: 3 },
+    { prato: "Pizza", preparo: 4 },
+    { prato: "Hambúrguer", preparo: 4 },
+    { prato: "Lasanha", preparo: 5 },
+    { prato: "Risoto", preparo: 5 },
+    { prato: "Feijoada", preparo: 8 },
+  ];
+
+  // Instantes visíveis nos Gantts; depois disso a janela acompanha o relógio
+  const JANELA_AOVIVO = 30;
+  // Espaço livre deixado à direita do instante atual quando a janela anda
+  const MARGEM_FUTURO = 8;
+  // Limita o salto do relógio quando a aba fica em segundo plano
+  const MAIOR_PASSO_MS = 250;
+
+  const btnPlay = document.getElementById("btn-play");
+  const btnReiniciarAoVivo = document.getElementById("btn-reiniciar-aovivo");
+  const btnRush = document.getElementById("btn-rush");
+  const botoesPedido = document.querySelectorAll("[data-prioridade]");
+  const seletorPrato = document.getElementById("seletor-prato");
+  const seletorVelocidade = document.getElementById("velocidade");
+  const relogio = document.getElementById("relogio");
+
+  const aoVivo = {
+    pedidos: [],
+    linhas: null,
+    metricas: null,
+    fins: null, // instante em que cada pedido termina, por algoritmo
+    agora: 0, // instante atual, fracionário para o Gantt crescer suavemente
+    rodando: false,
+    ultimoQuadro: null,
+    assinaturaMetricas: "",
+  };
+
+  function sortear(lista) {
+    return lista[Math.floor(Math.random() * lista.length)];
+  }
+
+  function inicializarCardapio() {
+    seletorPrato.innerHTML = '<option value="">Prato aleatório</option>';
+    CARDAPIO.forEach((item, i) => {
+      const opcao = document.createElement("option");
+      opcao.value = String(i);
+      opcao.textContent = `${item.prato} (preparo ${item.preparo})`;
+      seletorPrato.appendChild(opcao);
+    });
+  }
+
+  function recalcularAoVivo() {
+    const pedidos = aoVivo.pedidos;
+    aoVivo.linhas = executarAlgoritmos(pedidos, lerQuantum());
+    aoVivo.metricas = calcularTodasMetricas(pedidos, aoVivo.linhas);
+    aoVivo.fins = {};
+    for (const [chave, linha] of Object.entries(aoVivo.linhas)) {
+      const fins = {};
+      linha.forEach((t) => {
+        fins[t.pedido] = Math.max(fins[t.pedido] || 0, t.fim);
+      });
+      aoVivo.fins[chave] = fins;
+    }
+    aoVivo.assinaturaMetricas = ""; // força redesenhar a tabela de métricas
+
+    if (pedidos.length === 0) {
+      legendaPedidos.innerHTML = "";
+      corpoTabelaPedidos.innerHTML =
+        '<tr><td colspan="5" class="tabela-vazia">Nenhum pedido ainda. Use + VIP, + Comum ou + Delivery.</td></tr>';
+    } else {
+      renderizarTabelaPedidos(pedidos);
+      const container = corpoTabelaPedidos.closest(".tabela-container");
+      if (container) container.scrollTop = container.scrollHeight;
+    }
+    atualizarTravaQuantum();
+  }
+
+  // Trocar o quantum no meio do serviço reescreveria o passado do Round Robin
+  function atualizarTravaQuantum() {
+    const travar = aoVivo.pedidos.length > 0;
+    inputQuantum.disabled = travar;
+    inputQuantum.title = travar ? "Reinicie para trocar o quantum" : "";
+  }
+
+  function fazerPedido(prioridadePedido, item) {
+    const escolhido =
+      item || (seletorPrato.value === "" ? sortear(CARDAPIO) : CARDAPIO[Number(seletorPrato.value)]);
+    aoVivo.pedidos.push({
+      id: `P${aoVivo.pedidos.length + 1}`,
+      prato: escolhido.prato,
+      // Chega no próximo instante inteiro, então nada do que já foi desenhado muda
+      chegada: Math.ceil(aoVivo.agora),
+      preparo: escolhido.preparo,
+      prioridade: prioridadePedido,
+    });
+  }
+
+  function novoPedido(prioridadePedido) {
+    fazerPedido(prioridadePedido);
+    recalcularAoVivo();
+    renderizarAoVivo();
+  }
+
+  // Vários pedidos de uma vez, a maioria de clientes comuns
+  function horaDoRush() {
+    for (let i = 0; i < 4; i++) {
+      fazerPedido(sortear([1, 2, 2, 3]), sortear(CARDAPIO));
+    }
+    recalcularAoVivo();
+    renderizarAoVivo();
+  }
+
+  // Recorta a linha do tempo para a janela visível e até o instante atual,
+  // deslocada para começar em zero (formato que o desenharGantt espera)
+  function recortarJanela(linha, inicio, agora) {
+    return linha
+      .filter((t) => t.inicio < agora && t.fim > inicio)
+      .map((t) => ({
+        pedido: t.pedido,
+        inicio: Math.max(t.inicio, inicio) - inicio,
+        fim: Math.min(t.fim, agora) - inicio,
+        original: t,
+      }));
+  }
+
+  // O que o fogão de um algoritmo está fazendo agora e quem espera no balcão
+  function descreverFogao(chave, agora) {
+    const atual = aoVivo.linhas[chave].find((t) => t.inicio <= agora && agora < t.fim);
+    const fins = aoVivo.fins[chave];
+    const esperando = aoVivo.pedidos
+      .filter((p) => p.chegada <= agora && fins[p.id] > agora && (!atual || atual.pedido !== p.id))
+      .map((p) => p.id);
+    const fogao = atual ? `No fogão: ${atual.pedido}` : "Fogão livre";
+    return esperando.length ? `${fogao} · Balcão: ${esperando.join(", ")}` : fogao;
+  }
+
+  // As médias são a previsão com todos os pedidos já feitos; a contagem de
+  // prontos mostra o andamento. Só redesenha quando a contagem muda.
+  function renderizarMetricasAoVivo(listaAlgoritmos, agora) {
+    const prontos = {};
+    listaAlgoritmos.forEach(({ chave }) => {
+      prontos[chave] = Object.values(aoVivo.fins[chave]).filter((fim) => fim <= agora).length;
+    });
+    const assinatura = JSON.stringify(prontos);
+    if (assinatura === aoVivo.assinaturaMetricas) return;
+    aoVivo.assinaturaMetricas = assinatura;
+
+    if (aoVivo.pedidos.length === 0) {
+      corpoTabelaMetricas.innerHTML =
+        '<tr><td colspan="4" class="tabela-vazia">As métricas aparecem com o primeiro pedido.</td></tr>';
+      return;
+    }
+    const total = aoVivo.pedidos.length;
+    renderizarTabelaMetricas(listaAlgoritmos, aoVivo.metricas, (chave) =>
+      ` <small class="prontos-aovivo">${prontos[chave]}/${total} prontos</small>`
+    );
+  }
+
+  function renderizarAoVivo() {
+    const agora = aoVivo.agora;
+    const inicio = Math.max(0, agora - (JANELA_AOVIVO - MARGEM_FUTURO));
+    relogio.textContent = Math.floor(agora);
+
+    const listaAlgoritmos = listarAlgoritmos(lerQuantum());
+    listaAlgoritmos.forEach(({ chave }) => {
+      const elGantt = elementosGantt[chave];
+      const trechos = recortarJanela(aoVivo.linhas[chave], inicio, agora);
+      desenharGanttComparacao(elGantt, trechos, undefined, JANELA_AOVIVO);
+
+      // O desenho usa a janela deslocada; o tooltip mostra os instantes reais
+      const blocos = elGantt.querySelectorAll(".gantt-bloco");
+      if (blocos.length === trechos.length) {
+        blocos.forEach((bloco, i) => {
+          const { pedido, inicio: ini, fim } = trechos[i].original;
+          bloco.title = `${pedido} | Instante ${ini} até ${fim} (Duração: ${fim - ini})`;
+        });
+      }
+
+      const marcador = document.createElement("div");
+      marcador.className = "gantt-agora";
+      marcador.style.left = `${((agora - inicio) / JANELA_AOVIVO) * 100}%`;
+      elGantt.appendChild(marcador);
+
+      elementosOrdem[chave].textContent = descreverFogao(chave, agora);
+    });
+
+    renderizarReguaTempo(JANELA_AOVIVO, inicio);
+    renderizarMetricasAoVivo(listaAlgoritmos, agora);
+    atualizarBotaoPlay();
+  }
+
+  function quadroAoVivo(instante) {
+    if (!aoVivo.rodando) return;
+    if (aoVivo.ultimoQuadro !== null) {
+      const passoMs = Math.min(instante - aoVivo.ultimoQuadro, MAIOR_PASSO_MS);
+      aoVivo.agora += (passoMs / 1000) * (Number(seletorVelocidade.value) || 1);
+    }
+    aoVivo.ultimoQuadro = instante;
+    renderizarAoVivo();
+    requestAnimationFrame(quadroAoVivo);
+  }
+
+  function iniciarAoVivo() {
+    if (aoVivo.rodando) return;
+    aoVivo.rodando = true;
+    aoVivo.ultimoQuadro = null;
+    document.body.classList.add("aovivo-rodando");
+    atualizarBotaoPlay();
+    requestAnimationFrame(quadroAoVivo);
+  }
+
+  function pausarAoVivo() {
+    aoVivo.rodando = false;
+    document.body.classList.remove("aovivo-rodando");
+    atualizarBotaoPlay();
+  }
+
+  function alternarAoVivo() {
+    if (aoVivo.rodando) pausarAoVivo();
+    else iniciarAoVivo();
+  }
+
+  function atualizarBotaoPlay() {
+    if (aoVivo.rodando) btnPlay.textContent = "⏸ Pausar";
+    else btnPlay.textContent = aoVivo.agora === 0 ? "▶ Abrir restaurante" : "▶ Continuar";
+  }
+
+  function reiniciarAoVivo() {
+    pausarAoVivo();
+    aoVivo.pedidos = [];
+    aoVivo.agora = 0;
+    recalcularAoVivo();
+    renderizarAoVivo();
+  }
+
+  // Eventos de interação
+  function atualizarTela() {
+    recalcularAoVivo();
+    renderizarAoVivo();
+  }
 
   inputQuantum.addEventListener("input", () => {
     // Evita quantum menor que 1
     const v = parseInt(inputQuantum.value, 10);
     if (v < 1) inputQuantum.value = 1;
-    atualizarComparacao();
+    atualizarTela();
   });
 
   inputQuantum.addEventListener("change", () => {
     const v = parseInt(inputQuantum.value, 10);
     if (isNaN(v) || v < 1) inputQuantum.value = 2;
-    atualizarComparacao();
+    atualizarTela();
   });
+
+  // Os botões perdem o foco depois do clique para o Espaço sempre pausar,
+  // em vez de clicar de novo no último botão usado
+  function aoClicar(botao, acao) {
+    botao.addEventListener("click", () => {
+      botao.blur();
+      acao();
+    });
+  }
+
+  // Pelo mesmo motivo, os seletores perdem o foco depois de escolher, senão
+  // os atalhos do teclado param de funcionar enquanto o seletor está focado
+  [seletorPrato, seletorVelocidade].forEach((seletor) => {
+    seletor.addEventListener("change", () => seletor.blur());
+  });
+
+  aoClicar(btnPlay, alternarAoVivo);
+  aoClicar(btnReiniciarAoVivo, reiniciarAoVivo);
+  aoClicar(btnRush, horaDoRush);
+  botoesPedido.forEach((b) => aoClicar(b, () => novoPedido(Number(b.dataset.prioridade))));
+
+  // Atalhos para fazer pedidos durante a apresentação sem usar o mouse
+  document.addEventListener("keydown", (evento) => {
+    if (evento.ctrlKey || evento.metaKey || evento.altKey) return;
+    if (evento.target.closest && evento.target.closest("input, select, textarea")) return;
+
+    if (evento.key === "1" || evento.key === "2" || evento.key === "3") {
+      novoPedido(Number(evento.key));
+    } else if (evento.key === "r" || evento.key === "R") {
+      horaDoRush();
+    } else if (evento.key === " ") {
+      evento.preventDefault();
+      alternarAoVivo();
+    }
+  });
+
+  function iniciarTela() {
+    inicializarCardapio();
+    atualizarTela();
+  }
 
   // Inicialização quando o DOM estiver pronto
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      inicializarCenarios();
-      atualizarComparacao();
-    });
+    document.addEventListener("DOMContentLoaded", iniciarTela);
   } else {
-    inicializarCenarios();
-    atualizarComparacao();
+    iniciarTela();
   }
 })();

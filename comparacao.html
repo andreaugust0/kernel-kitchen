@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparação de Algoritmos · Chef Escalonador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="estilo.css">
   <link rel="stylesheet" href="comparacao.css">
 </head>
@@ -23,19 +26,10 @@
     <!-- Cabeçalho introdutório -->
     <section class="intro">
       <h1>Comparação de Algoritmos</h1>
-      <p>
-        Coloque os quatro algoritmos de escalonamento lado a lado no mesmo cenário.
-        Observe a ordem no fogão através dos gráficos de Gantt alinhados no tempo e veja o impacto direto nas métricas médias.
-      </p>
     </section>
 
-    <!-- Painel de Controles: Seletor de Cenário e Quantum -->
+    <!-- Painel de Controles: relógio, quantum e pedidos feitos na hora -->
     <section class="painel-controles" aria-label="Controles da Comparação">
-      <div class="controle-grupo">
-        <label for="seletor-cenario">Cenário da Cozinha:</label>
-        <select id="seletor-cenario" class="seletor-cenario"></select>
-      </div>
-
       <div class="controle-grupo">
         <label for="quantum">Quantum do Round Robin:</label>
         <div class="input-com-unidade">
@@ -44,17 +38,42 @@
         </div>
       </div>
 
-      <div class="cenario-info">
-        <span class="info-rotulo">Sobre este cenário:</span>
-        <p id="cenario-descricao" class="cenario-descricao"></p>
+      <div class="controle-grupo">
+        <label for="velocidade">Velocidade:</label>
+        <select id="velocidade" class="seletor seletor-curto">
+          <option value="0.5">0,5 instante/s</option>
+          <option value="1" selected>1 instante/s</option>
+          <option value="2">2 instantes/s</option>
+          <option value="4">4 instantes/s</option>
+        </select>
+      </div>
+
+      <div class="relogio-aovivo" aria-live="off">
+        <span class="rotulo"><span class="ponto-aovivo" aria-hidden="true"></span>Tempo (t)</span>
+        <strong id="relogio">0</strong>
+      </div>
+
+      <div class="aovivo-painel">
+        <div class="aovivo-linha">
+          <button type="button" id="btn-play" class="btn-aovivo btn-play">▶ Abrir restaurante</button>
+          <button type="button" id="btn-reiniciar-aovivo" class="btn-aovivo">Reiniciar</button>
+        </div>
+        <div class="aovivo-linha">
+          <label for="seletor-prato">Novo pedido:</label>
+          <select id="seletor-prato" class="seletor seletor-curto"></select>
+          <button type="button" class="btn-aovivo btn-pedido prio-vip" data-prioridade="1">+ VIP</button>
+          <button type="button" class="btn-aovivo btn-pedido prio-comum" data-prioridade="2">+ Comum</button>
+          <button type="button" class="btn-aovivo btn-pedido prio-delivery" data-prioridade="3">+ Delivery</button>
+          <button type="button" id="btn-rush" class="btn-aovivo btn-rush">Hora do rush</button>
+        </div>
+        <p class="aovivo-dica">Teclado: <kbd>1</kbd> VIP · <kbd>2</kbd> Comum · <kbd>3</kbd> Delivery · <kbd>R</kbd> Hora do rush · <kbd>Espaço</kbd> pausa</p>
       </div>
     </section>
 
-    <!-- Seção de Entrada: Tabela com os Pedidos do Cenário -->
-    <section class="secao-pedidos" aria-label="Pedidos do Cenário Selecionado">
+    <!-- Seção de Entrada: Tabela com os Pedidos feitos até agora -->
+    <section class="secao-pedidos" aria-label="Pedidos feitos até agora">
       <div class="secao-cabecalho">
         <h2>Entrada: Pedidos que chegaram à cozinha</h2>
-        <span class="dica-tabela">Comandas a serem preparadas no fogão</span>
       </div>
 
       <div class="tabela-container">
@@ -80,7 +99,6 @@
       <div class="secao-cabecalho">
         <div>
           <h2>Batalha no Fogão: Gráficos de Gantt</h2>
-          <p class="gantts-sub">Todos os algoritmos estão na mesma escala de tempo para comparação direta.</p>
         </div>
         <div class="legenda-pedidos" id="legenda-pedidos">
           <!-- Legenda de cores dos pedidos gerada dinamicamente -->
@@ -160,7 +178,7 @@
     <section class="secao-metricas" aria-label="Comparativo de Métricas Médias">
       <div class="secao-cabecalho">
         <h2>Tabela de Métricas Médias</h2>
-        <span class="dica-metricas">Em cada coluna, o menor valor (melhor desempenho) recebe destaque visual.</span>
+        <span class="dica-metricas">Previsão com todos os pedidos feitos até agora.</span>
       </div>
 
       <div class="tabela-container">
@@ -179,60 +197,20 @@
         </table>
       </div>
 
-      <!-- Card da Frase de Conclusão do Cenário -->
-      <div class="card-conclusao" id="card-conclusao">
-        <div class="conclusao-icone">💡</div>
-        <div class="conclusao-texto">
-          <h3>Conclusão do Cenário</h3>
-          <p id="cenario-conclusao"></p>
-        </div>
-      </div>
     </section>
 
-    <!-- Guia Teórico das Métricas -->
-    <section class="secao-formulas" aria-label="Como as métricas são calculadas">
-      <h2>Entenda as métricas de escalonamento</h2>
-      <div class="grade-formulas">
-        <article class="item-formula">
-          <h4>Turnaround (Tempo de Retorno)</h4>
-          <p class="formula-mat"><code>Fim do último trecho &minus; Chegada</code></p>
-          <p>
-            O tempo total decorrido desde o momento em que o cliente fez o pedido até a refeição ser completamente finalizada e entregue.
-          </p>
-        </article>
-
-        <article class="item-formula">
-          <h4>Tempo de Espera</h4>
-          <p class="formula-mat"><code>Turnaround &minus; Tempo de Preparo</code></p>
-          <p>
-            O tempo total em que o pedido ficou parado no balcão de comandas pronto para cozinhar, aguardando o fogão ser liberado.
-          </p>
-        </article>
-
-        <article class="item-formula">
-          <h4>Tempo de Resposta</h4>
-          <p class="formula-mat"><code>Início do primeiro trecho &minus; Chegada</code></p>
-          <p>
-            O tempo que o pedido levou para ir ao fogão pela primeira vez. Crucial em sistemas interativos para dar feedback imediato ao usuário.
-          </p>
-        </article>
-      </div>
-    </section>
   </main>
 
   <!-- Rodapé -->
   <footer class="rodape">
     <div class="rodape-conteudo">
-      <p><strong>Chef Escalonador</strong> · Tela de Comparação (Pessoa 3)</p>
-      <p>Utiliza <code>cenarios.js</code>, <code>algoritmos.js</code>, <code>metricas.js</code> e o componente de Gantt da Pessoa 2.</p>
+      <p><strong>Chef Escalonador</strong> · Projeto de Sistemas Operacionais</p>
     </div>
   </footer>
 
   <!-- Scripts: Lógica de SO + Componentes de Visualização -->
-  <script src="cenarios.js"></script>
   <script src="algoritmos.js"></script>
   <script src="metricas.js"></script>
-  <script src="gantt.js"></script>
   <script src="comparacao.js"></script>
 </body>
 </html>

@@ -5,8 +5,8 @@
 // Trecho esperado: { id, inicio, fim }
 const ROTULOS_ALG = { fcfs: 'FCFS', sjf: 'SJF', prioridade: 'Prioridade', rr: 'Round Robin' };
 
-function listaAlgoritmos() {                       // ALGORITMOS = { fcfs: fn(pedidos, quantum), ... }
-  return typeof ALGORITMOS !== 'undefined' ? Object.keys(ALGORITMOS) : [];
+function listaAlgoritmos() {                       // ALGORITMOS = [{ id, nome, executar(pedidos, quantum) }, ...]
+  return typeof ALGORITMOS !== 'undefined' ? ALGORITMOS.map(a => a.id) : [];
 }
 function listaCenarios() {                          // CENARIOS = { chave: [pedidos] } ou { chave: {nome, pedidos} }
   const c = typeof CENARIOS !== 'undefined' ? CENARIOS : {};
@@ -23,7 +23,7 @@ function tipoAlg(alg) {
     : /prio/i.test(alg) ? 'prioridade' : 'fcfs';
 }
 function gerarLinha(alg, pedidos, quantum) {
-  const r = ALGORITMOS[alg](pedidos.map(p => ({ ...p })), quantum);
+  const r = ALGORITMOS.find(a => a.id === alg).executar(pedidos.map(p => ({ ...p })), quantum);
   return (Array.isArray(r) ? r : r.linhaDoTempo).map(t => ({ id: t.id ?? t.pedido, inicio: t.inicio, fim: t.fim }));
 }
 /* ======================================================================= */
