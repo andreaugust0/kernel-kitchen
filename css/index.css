@@ -1,0 +1,161 @@
+/* Página inicial. Tokens, botões, etiquetas e tabelas vêm de estilo.css. */
+
+/* Hero */
+.inicio .hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0 56px;
+  text-align: center;
+}
+
+.inicio .emblema {
+  background: var(--color-paper);
+  border-color: var(--color-hairline);
+}
+
+.inicio .emblema::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ember);
+}
+
+.inicio .hero h1 {
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -2.4px;
+}
+
+/* Cartões das telas */
+.inicio .secao-titulo {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.inicio .grade-telas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.inicio .cartao-tela {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inicio .cartao-tela:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.12), var(--shadow-card);
+}
+
+.inicio .cartao-tela.destaque {
+  border-color: var(--color-ink);
+}
+
+.inicio .cartao-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.inicio .icone-tela {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-nested);
+  background: var(--color-canvas);
+}
+
+.inicio .icone-tela svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inicio .tag-destaque {
+  background: var(--color-ink-soft);
+  color: #fafafa;
+}
+
+.inicio .cartao-tela h3 {
+  font-size: 18px;
+  line-height: 1.33;
+  letter-spacing: -0.25px;
+}
+
+.inicio .cartao-tela p {
+  flex: 1;
+  color: var(--color-mid-gray);
+}
+
+.inicio .cartao-tela p strong {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.inicio .btn-tela {
+  margin-top: 14px;
+  width: 100%;
+  height: 40px;
+}
+
+/* Tabela resumo dos algoritmos */
+.inicio .secao-algoritmos {
+  padding: 24px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+}
+
+.inicio .secao-algoritmos h2 {
+  margin-bottom: 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  letter-spacing: -0.6px;
+}
+
+.inicio .tabela-resumo td {
+  color: var(--color-mid-gray);
+  vertical-align: top;
+}
+
+.inicio .tabela-resumo td:first-child {
+  color: var(--color-ink);
+}
+
+.inicio .tabela-resumo td strong {
+  font-weight: 600;
+}
+
+/* Responsividade */
+@media (max-width: 960px) {
+  .inicio .grade-telas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .inicio .hero h1 {
+    font-size: 36px;
+    letter-spacing: -0.9px;
+  }
+}

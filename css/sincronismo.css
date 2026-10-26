@@ -1,0 +1,200 @@
+/* Estilos da tela de Sincronismo (Pessoa 4).
+   Tokens, botões e etiquetas vêm de estilo.css; aqui fica só o que é desta tela. */
+
+/* Controles */
+.sinc .controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+}
+
+.sinc .botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+#btn-voltar, #btn-reiniciar { background: transparent; border-color: var(--color-hairline); }
+#btn-voltar:hover:not(:disabled), #btn-reiniciar:hover:not(:disabled) { background: var(--color-canvas); }
+.sinc .passo {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-mid-gray);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chave do mutex */
+.sinc .chave { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; }
+.sinc .chave input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sinc .chave-trilho {
+  position: relative; width: 40px; height: 22px; border-radius: 999px;
+  background: var(--color-hairline-forte); transition: background 0.2s ease;
+}
+.sinc .chave-bolinha {
+  position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--color-paper); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); transition: left 0.2s ease;
+}
+.sinc .chave input:checked + .chave-trilho { background: var(--color-ink); }
+.sinc .chave input:checked + .chave-trilho .chave-bolinha { left: 20px; }
+.sinc .chave input:focus-visible + .chave-trilho { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+
+/* Quem escolhe a vez: controle segmentado */
+.sinc .politica {
+  display: inline-flex; align-items: center; gap: 2px; padding: 4px;
+  background: var(--color-canvas); border-radius: var(--radius-pill);
+}
+.sinc .politica-rotulo {
+  padding: 0 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.6px;
+  text-transform: uppercase; color: var(--color-mid-gray);
+}
+.sinc .politica button { height: 30px; padding: 0 12px; background: transparent; color: var(--color-mid-gray); }
+.sinc .politica button:hover:not(:disabled) { background: transparent; color: var(--color-ink); }
+.sinc .politica button[aria-pressed="true"],
+.sinc .politica button[aria-pressed="true"]:hover:not(:disabled) { background: var(--color-paper); color: var(--color-ink); box-shadow: var(--shadow-card); }
+
+/* Cozinha */
+.sinc .cozinha {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 0.8fr) 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+.sinc .cozinheiro, .sinc .forno {
+  padding: 20px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.sinc .cozinheiro header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sinc .cozinheiro h2, .sinc .forno h2 { font-size: 16px; letter-spacing: -0.2px; }
+.sinc .cozinheiro h2 { display: inline-flex; align-items: center; gap: 8px; }
+.sinc .cozinheiro h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; }
+#coz-A h2::before { background: var(--cor-A); }
+#coz-B h2::before { background: var(--cor-B); }
+.sinc .coz-prato {
+  padding: 2px 10px; font-size: 12px; font-weight: 500;
+  color: var(--color-mid-gray); background: var(--color-canvas); border-radius: var(--radius-pill);
+}
+
+/* Botão da turma em cada cozinheiro */
+.sinc .btn-vez {
+  width: 100%; height: 40px; margin-top: 14px;
+  background: var(--color-ink); color: #fafafa; font-weight: 500;
+}
+.sinc .btn-vez:hover:not(:disabled) { background: #262626; }
+.sinc .btn-vez kbd { color: #fafafa; background: transparent; border-color: rgba(255, 255, 255, 0.3); }
+
+.sinc .coz-estado {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 14px 0 10px; padding: 2px 10px;
+  font-size: 12px; font-weight: 500;
+  color: var(--color-ink-soft); background: var(--color-canvas);
+  border: 1px solid transparent; border-radius: var(--radius-pill);
+}
+
+/* Estados do processo: executando ganha contorno, bloqueado ganha textura */
+.sinc .estado-executando { border-color: var(--color-ink); box-shadow: 0 0 0 1px var(--color-ink), var(--shadow-card); }
+.sinc .estado-executando .coz-estado { background: var(--color-ink-soft); color: #fafafa; }
+.sinc .estado-bloqueado {
+  border-style: dashed; border-color: var(--color-mid-gray);
+  background: repeating-linear-gradient(135deg, var(--color-paper) 0 8px, var(--color-surface-alt) 8px 16px);
+}
+.sinc .estado-bloqueado .coz-estado { background: transparent; border-color: var(--color-mid-gray); }
+.sinc .estado-bloqueado .coz-estado::before { content: "⏸"; font-size: 11px; }
+.sinc .estado-terminado .coz-codigo { opacity: 0.6; }
+
+/* Código de cada cozinheiro */
+.sinc .coz-codigo {
+  margin: 0;
+  padding: 12px 12px 12px 36px;
+  background: var(--color-ink);
+  color: #a3a3a3;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+}
+.sinc .coz-codigo li { padding: 0 8px; border-radius: var(--radius-small); }
+.sinc .coz-codigo li::marker { color: #525252; }
+.sinc .coz-codigo li.feita { color: #525252; }
+.sinc .coz-codigo li.atual { background: #fafafa; color: var(--color-ink); }
+.sinc .coz-codigo li.proxima { color: #fafafa; outline: 1px dashed #525252; outline-offset: -1px; }
+.sinc .estado-bloqueado .coz-codigo li.atual,
+.sinc .estado-bloqueado .coz-codigo li.proxima { background: #404040; color: #fafafa; outline: none; }
+
+.sinc .coz-resultado { margin-top: 12px; min-height: 1.5em; font-weight: 600; }
+.sinc .resultado-pronto .coz-resultado::before { content: "✓ "; }
+.sinc .resultado-estragado .coz-resultado { color: var(--color-ember); }
+.sinc .resultado-estragado .coz-resultado::before { content: "✕ "; }
+
+/* Forno */
+.sinc .forno { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.sinc .forno-porta {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; min-height: 120px; padding: 12px;
+  background: var(--color-ink-soft);
+  border: 6px solid #262626;
+  border-radius: var(--radius-xl);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+/* Ocupado: a resistência do forno acende embaixo */
+.sinc .forno.ocupado .forno-porta { box-shadow: inset 0 -4px 0 var(--color-ember); }
+.sinc .forno.erro .forno-porta { background: var(--color-ember); border-color: #b80009; }
+.sinc .forno-pratos { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.sinc .prato { padding: 4px 12px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 600; }
+.sinc .prato-A { background: var(--cor-A); color: var(--color-ink); }
+.sinc .prato-B { background: var(--cor-B); color: #fff; }
+.sinc .forno.erro .prato { background: var(--color-paper); color: var(--color-ember); text-decoration: line-through; }
+.sinc .forno-status { font-weight: 600; }
+.sinc .forno.erro .forno-status { color: var(--color-ember); }
+.sinc .forno-trava, .sinc .forno-fila { font-size: 13px; color: var(--color-mid-gray); }
+.sinc .forno-trava.trancado { color: var(--color-ink); font-weight: 500; }
+.sinc .forno-trava.trancado::before { content: "🔒 "; }
+
+/* Mensagem, placar e resumo */
+.sinc .mensagem {
+  margin-top: 16px;
+  padding: 14px 20px;
+  min-height: 3.2em;
+  font-size: 15px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+}
+.sinc .mensagem.erro { background: var(--color-ember-soft); border-color: #fecaca; }
+
+/* Ponto à esquerda da mensagem e do resumo: preto normal, vermelho no erro */
+.sinc .mensagem, .sinc .resumo { position: relative; padding-left: 40px; }
+.sinc .mensagem::before, .sinc .resumo::before {
+  content: ""; position: absolute; left: 20px; top: 50%;
+  width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--color-ink);
+}
+.sinc .mensagem.erro::before, .sinc .resumo.ruim::before { background: var(--color-ember); }
+.sinc .resumo.sorte::before { background: transparent; border: 1.5px solid var(--color-mid-gray); }
+
+.sinc .placar { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.sinc .placar div {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 10px 18px; color: var(--color-mid-gray);
+  background: var(--color-paper); border: 1px solid var(--color-hairline); border-radius: var(--radius-pill);
+}
+.sinc .placar span { font-size: 24px; font-weight: 600; letter-spacing: -0.6px; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+#estragados { color: var(--color-ember); }
+
+.sinc .resumo { margin-top: 12px; padding: 14px 20px; border-radius: var(--radius-pill); border: 1px solid var(--color-hairline); }
+.sinc .resumo.bom { background: var(--color-paper); }
+.sinc .resumo.ruim { background: var(--color-ember-soft); border-color: #fecaca; }
+.sinc .resumo.sorte { background: var(--color-surface-alt); border-style: dashed; border-color: var(--color-mid-gray); }
+
+@media (max-width: 860px) {
+  .sinc .cozinha { grid-template-columns: 1fr; }
+  .sinc .forno { order: -1; }
+  .sinc .passo { margin-left: 0; }
+}

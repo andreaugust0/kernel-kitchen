@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sincronismo · Chef Escalonador</title>
-  <!-- estilo.css é o estilo comum das telas (Pessoa 2). sincronismo.css só tem o que é desta tela. -->
-  <link rel="stylesheet" href="estilo.css">
-  <link rel="stylesheet" href="sincronismo.css">
+  <!-- estilo.css é o estilo comum das telas. sincronismo.css só tem o que é desta tela. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/sincronismo.css">
 </head>
 <body class="sinc">
   <header class="topo">
@@ -34,6 +37,12 @@
         <span class="chave-trilho" aria-hidden="true"><span class="chave-bolinha"></span></span>
         <span id="rotulo-mutex">Mutex desligado</span>
       </label>
+      <div class="politica" role="group" aria-label="Quem escolhe a vez">
+        <span class="politica-rotulo">Quem escolhe a vez:</span>
+        <button type="button" data-politica="turma" aria-pressed="true">Vocês</button>
+        <button type="button" data-politica="sorteio" aria-pressed="false">Sorteio</button>
+        <button type="button" data-politica="revezamento" aria-pressed="false">Revezamento</button>
+      </div>
       <div class="botoes">
         <button id="btn-voltar" type="button">&larr; Passo anterior</button>
         <button id="btn-proximo" type="button" class="principal">Próximo passo &rarr;</button>
@@ -49,6 +58,7 @@
           <h2>Cozinheira Ana</h2>
           <span class="coz-prato">Prato: pizza</span>
         </header>
+        <button type="button" class="btn-vez" data-coz="A">▶ Dar a vez <kbd>A</kbd></button>
         <p class="coz-estado"></p>
         <ol class="coz-codigo"></ol>
         <p class="coz-resultado"></p>
@@ -69,6 +79,7 @@
           <h2>Cozinheiro Beto</h2>
           <span class="coz-prato">Prato: lasanha</span>
         </header>
+        <button type="button" class="btn-vez" data-coz="B">▶ Dar a vez <kbd>B</kbd></button>
         <p class="coz-estado"></p>
         <ol class="coz-codigo"></ol>
         <p class="coz-resultado"></p>
@@ -83,32 +94,8 @@
     </section>
 
     <p id="resumo" class="resumo" hidden></p>
-
-    <section class="conceitos">
-      <h2>O que esta tela mostra</h2>
-      <dl>
-        <dt>Região crítica</dt>
-        <dd>Trecho em que o cozinheiro usa o forno. Só um pode estar nele por vez.</dd>
-        <dt>Condição de corrida</dt>
-        <dd>
-          Sem o mutex, "olhar se está livre" e "colocar o prato" são dois passos separados. Se o escalonador
-          troca de cozinheiro entre eles, os dois veem o forno livre e os dois colocam o prato.
-        </dd>
-        <dt>Mutex (exclusão mútua)</dt>
-        <dd>
-          Uma trava. <code>lock</code> pega a trava ou bloqueia quem chegar depois; <code>unlock</code> solta a
-          trava e acorda o próximo da fila.
-        </dd>
-        <dt>Bloqueado</dt>
-        <dd>
-          Estado do processo que espera um recurso. Ele sai da disputa pela vez de executar até ser acordado, por isso
-          o outro cozinheiro executa vários passos seguidos.
-        </dd>
-      </dl>
-      <p class="dica">Dica: as setas &larr; e &rarr; do teclado também avançam e voltam.</p>
-    </section>
   </main>
 
-  <script src="sincronismo.js"></script>
+  <script src="js/sincronismo.js"></script>
 </body>
 </html>

@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chef Escalonador · Kernel Kitchen</title>
-  <!-- estilo.css é o estilo comum das telas (Pessoa 2). index.css contém o estilo específico da página inicial. -->
-  <link rel="stylesheet" href="estilo.css">
-  <link rel="stylesheet" href="index.css">
+  <!-- estilo.css é o estilo comum das telas. index.css contém o estilo específico da página inicial. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
 <body class="inicio">
   <header class="topo">
-    <a class="marca" href="index.html">Chef Escalonador</a>
+    <a class="marca" href="index.html">Kernel Kitchen</a>
     <nav class="menu" aria-label="Telas do jogo">
       <a href="index.html" aria-current="page">Início</a>
       <a href="aula.html">Modo Aula</a>
@@ -22,197 +25,54 @@
   <main>
     <!-- Seção Principal de Apresentação (Hero) -->
     <section class="hero">
-      <div class="hero-conteudo">
-        <span class="emblema">🍳 Sistemas Operacionais na Prática</span>
-        <h1>Chef Escalonador</h1>
-        <p class="subtitulo">
-          Como um sistema operacional organiza o processamento de tarefas e resolve conflitos por recursos compartilhados?
-          Descubra na prática através do ritmo de uma cozinha de restaurante!
-        </p>
-      </div>
+      <span class="badge emblema">Sistemas Operacionais na Prática</span>
+      <h1>Kernel Kitchen</h1>
     </section>
 
     <!-- As Três Telas do Projeto -->
     <section class="secao-telas" aria-label="Telas do Projeto">
-      <h2 class="secao-titulo">Escolha uma tela para explorar</h2>
-      <p class="secao-subtitulo">O projeto é dividido em três módulos complementares de aprendizado:</p>
+      <h2 class="rotulo secao-titulo">Escolha uma tela para explorar</h2>
 
       <div class="grade-telas">
         <!-- Card 1: Modo Aula -->
         <article class="cartao-tela">
           <div class="cartao-cabecalho">
-            <span class="icone-tela">👨‍🍳</span>
-            <span class="tag-tela">Passo a Passo</span>
+            <span class="icone-tela" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+            </span>
+            <span class="badge tag-tela">Passo a passo</span>
           </div>
           <h3>Modo Aula</h3>
-          <p>
-            Acompanhe a cozinha funcionando no tempo: comandas chegando ao balcão, o fogão atendendo um pedido por vez
-            e o gráfico de Gantt sendo desenhado a cada instante com explicações detalhadas.
-          </p>
-          <ul class="lista-conceitos">
-            <li>Estados do processo: Novo, Pronto, Executando e Terminado</li>
-            <li>Controle interativo com botões de avançar, voltar e reprodução</li>
-            <li>Visualização da fila de pronto no balcão</li>
-          </ul>
-          <a href="aula.html" class="btn-tela">Abrir Modo Aula &rarr;</a>
+          <p>Acompanhe a cozinha instante a instante, com o Gantt sendo desenhado.</p>
+          <a href="aula.html" class="btn btn-contorno btn-tela">Abrir Modo Aula &rarr;</a>
         </article>
 
         <!-- Card 2: Comparação -->
         <article class="cartao-tela destaque">
           <div class="cartao-cabecalho">
-            <span class="icone-tela">⚔️</span>
-            <span class="tag-tela tag-destaque">Batalha de Algoritmos</span>
+            <span class="icone-tela" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 7h6"/><path d="M10 11h8"/><path d="M7 15h4"/></svg>
+            </span>
+            <span class="badge tag-tela tag-destaque">Batalha de algoritmos</span>
           </div>
           <h3>Comparação</h3>
-          <p>
-            Coloque <strong>FCFS, SJF, Prioridade e Round Robin</strong> lado a lado no mesmo cenário.
-            Analise quatro Gantts na mesma escala e veja a tabela comparativa com espera média, turnaround e resposta.
-          </p>
-          <ul class="lista-conceitos">
-            <li>Quatro gráficos de Gantt empilhados e alinhados no tempo</li>
-            <li>Seletor de cenários: Efeito comboio, Cliente VIP e Pedidos parecidos</li>
-            <li>Ajuste dinâmico de quantum para o Round Robin</li>
-            <li>Destaque automático no melhor valor de cada métrica</li>
-          </ul>
-          <a href="comparacao.html" class="btn-tela btn-principal">Ver Comparação &rarr;</a>
+          <p>Faça pedidos na hora e veja <strong>FCFS, SJF, Prioridade e Round Robin</strong> reagindo lado a lado.</p>
+          <a href="comparacao.html" class="btn btn-primario btn-tela btn-principal">Ver Comparação &rarr;</a>
         </article>
 
         <!-- Card 3: Sincronismo -->
         <article class="cartao-tela">
           <div class="cartao-cabecalho">
-            <span class="icone-tela">🔒</span>
-            <span class="tag-tela">Concorrência & Mutex</span>
+            <span class="icone-tela" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <span class="badge tag-tela">Concorrência &amp; mutex</span>
           </div>
           <h3>Sincronismo</h3>
-          <p>
-            Dois cozinheiros disputam um único forno compartilhado. Observe o desastre da <strong>condição de corrida</strong>
-            com o mutex desligado e como a <strong>exclusão mútua</strong> resolve o conflito com o mutex ligado.
-          </p>
-          <ul class="lista-conceitos">
-            <li>Visualização de recurso compartilhado e região crítica</li>
-            <li>Estado bloqueado (esperando a trava do recurso)</li>
-            <li>Chave interativa para ligar e desligar o mutex</li>
-          </ul>
-          <a href="sincronismo.html" class="btn-tela">Testar Sincronismo &rarr;</a>
+          <p>Dois cozinheiros, um forno: veja a <strong>condição de corrida</strong> e como o <strong>mutex</strong> resolve.</p>
+          <a href="sincronismo.html" class="btn btn-contorno btn-tela">Testar Sincronismo &rarr;</a>
         </article>
       </div>
-    </section>
-
-    <!-- Seção da Analogia -->
-    <section class="secao-analogia" aria-label="A Analogia da Cozinha">
-      <div class="cabecalho-bloco">
-        <h2>A analogia da cozinha</h2>
-        <p>Para simplificar os conceitos abstratos de SO, associamos cada elemento do sistema a um elemento do restaurante:</p>
-      </div>
-
-      <div class="grade-analogias">
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">📋</div>
-          <h4>Pedido (Comanda)</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Processo</div>
-          <p>A unidade básica de trabalho solicitada que precisa de processamento para ser concluída.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">🔥</div>
-          <h4>Fogão</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">CPU / Processador</div>
-          <p>O recurso principal de execução. Na nossa cozinha, só cozinha um prato de cada vez.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">🛎️</div>
-          <h4>Balcão de Comandas</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Fila de Pronto</div>
-          <p>Onde ficam os pedidos que já chegaram ao restaurante e aguardam a vez de ir para o fogão.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">⏱️</div>
-          <h4>Tempo de Preparo</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Burst de CPU</div>
-          <p>A quantidade de tempo necessária no processador para cozinhar o prato até o fim.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">⏰</div>
-          <h4>Hora de Chegada</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Instante de Chegada</div>
-          <p>O momento exato em que a comanda entra no balcão e fica pronta para o escalonamento.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">⭐</div>
-          <h4>Tipo de Cliente</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Prioridade do Processo</div>
-          <p>1 = VIP (prioridade máxima), 2 = Comum, 3 = Delivery (menor número = maior urgência).</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">🍕</div>
-          <h4>Forno Compartilhado</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Recurso Compartilhado</div>
-          <p>Equipamento que só suporta um prato por vez; dois pratos juntos estragam a comida.</p>
-        </div>
-
-        <div class="item-analogia">
-          <div class="analogia-rotulo">Na Cozinha</div>
-          <div class="analogia-icone">🔒</div>
-          <h4>Trava do Forno</h4>
-          <div class="analogia-seta">&darr; equivale a &darr;</div>
-          <div class="analogia-so">Mutex (Lock / Unlock)</div>
-          <p>Garante exclusão mútua na região crítica: quem tenta usar com o forno trancado fica bloqueado.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Estados do Processo -->
-    <section class="secao-estados">
-      <h2>Ciclo de vida de um pedido</h2>
-      <p class="secao-subtitulo">Em qualquer instante do tempo, um pedido estará em um dos cinco estados fundamentais:</p>
-
-      <div class="esteira-estados">
-        <div class="passo-estado">
-          <span class="badge-estado">1. Novo</span>
-          <strong>Fora da cozinha</strong>
-          <p>O cliente ainda não fez o pedido (tempo atual é menor que o instante de chegada).</p>
-        </div>
-        <div class="seta-fluxo">&rarr;</div>
-        <div class="passo-estado">
-          <span class="badge-estado">2. Pronto</span>
-          <strong>No balcão</strong>
-          <p>O pedido chegou e aguarda o escalonador escolher quando irá para o fogão.</p>
-        </div>
-        <div class="seta-fluxo">&harr;</div>
-        <div class="passo-estado destaque-estado">
-          <span class="badge-estado">3. Executando</span>
-          <strong>No fogão (CPU)</strong>
-          <p>O prato está cozinhando ativamente pelo algoritmo da vez.</p>
-        </div>
-        <div class="seta-fluxo">&rarr;</div>
-        <div class="passo-estado">
-          <span class="badge-estado">4. Terminado</span>
-          <strong>Entregue</strong>
-          <p>Tempo de preparo concluído. O prato foi servido ao cliente!</p>
-        </div>
-      </div>
-      <p class="nota-bloqueado">
-        * No sincronismo, existe ainda o estado <strong>Bloqueado</strong>: quando um cozinheiro aguarda a trava (mutex) do forno ser liberada.
-      </p>
     </section>
 
     <!-- Tabela Resumo dos Algoritmos -->
@@ -266,8 +126,7 @@
 
   <footer class="rodape">
     <div class="rodape-conteudo">
-      <p><strong>Chef Escalonador (Kernel Kitchen)</strong> · Projeto prático de Sistemas Operacionais</p>
-      <p>Implementado em HTML, CSS e JavaScript puros (sem dependências externas).</p>
+      <p><strong>Chef Escalonador</strong> · Projeto de Sistemas Operacionais</p>
     </div>
   </footer>
 </body>

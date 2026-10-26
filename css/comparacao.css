@@ -1,0 +1,492 @@
+/* Tela de Comparação. Tokens, botões, campos e tabelas vêm de estilo.css. */
+
+/* Cartões das seções */
+.comp .painel-controles,
+.comp .secao-pedidos,
+.comp .secao-gantts,
+.comp .secao-metricas {
+  margin-bottom: 16px;
+  padding: 20px 24px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+}
+
+.comp .secao-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.comp .secao-cabecalho h2 {
+  font-size: 18px;
+  line-height: 1.33;
+  letter-spacing: -0.25px;
+}
+
+.comp .dica-metricas {
+  font-size: 13px;
+  color: var(--color-mid-gray);
+}
+
+/* Painel de controles: quantum, velocidade, relógio e pedidos */
+.comp .painel-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 24px;
+}
+
+.comp .controle-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comp .controle-grupo label,
+.comp .aovivo-linha label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-mid-gray);
+}
+
+.comp .input-com-unidade {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comp .input-com-unidade input {
+  width: 72px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.comp .unidade {
+  color: var(--color-mid-gray);
+}
+
+/* Relógio: bloco de número grande, sem moldura */
+.comp .relogio-aovivo {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.comp .relogio-aovivo .rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comp .relogio-aovivo strong {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.comp .ponto-aovivo {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-hairline-forte);
+}
+
+.comp.aovivo-rodando .ponto-aovivo {
+  background: var(--color-ember);
+  animation: pulsar-aovivo 1.2s ease-in-out infinite;
+}
+
+@keyframes pulsar-aovivo {
+  50% { opacity: 0.25; }
+}
+
+.comp .aovivo-painel {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-hairline);
+}
+
+.comp .aovivo-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.comp .aovivo-linha label {
+  margin-right: 4px;
+}
+
+.comp .btn-play {
+  min-width: 180px;
+  background: var(--color-ink);
+  color: #fafafa;
+}
+
+.comp .btn-play:hover:not(:disabled) {
+  background: #262626;
+}
+
+#btn-reiniciar-aovivo,
+.comp .btn-pedido.prio-delivery,
+.comp .btn-rush {
+  background: transparent;
+  border-color: var(--color-hairline);
+}
+
+#btn-reiniciar-aovivo:hover,
+.comp .btn-pedido.prio-delivery:hover,
+.comp .btn-rush:hover {
+  background: var(--color-canvas);
+}
+
+/* Botões de pedido seguem a mesma hierarquia das etiquetas de prioridade */
+.comp .btn-pedido.prio-vip {
+  background: var(--color-ink-soft);
+  color: #fafafa;
+}
+
+.comp .btn-pedido.prio-vip:hover {
+  background: #262626;
+}
+
+.comp .btn-rush::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ember);
+}
+
+.comp .aovivo-dica {
+  font-size: 13px;
+  color: var(--color-mid-gray);
+}
+
+/* Tabela de pedidos */
+.comp .secao-pedidos .tabela-container {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.comp .secao-pedidos th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.comp .tabela-pedidos td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.comp .tabela-pedidos td strong {
+  font-weight: 500;
+}
+
+.comp .tabela-vazia {
+  padding: 28px 14px;
+  text-align: center;
+  color: var(--color-mid-gray);
+}
+
+.comp .tag-pedido {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+
+/* Prioridade: VIP sólida, comum suave, delivery só contorno */
+.comp .badge-prioridade {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-ink-soft);
+  background: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+.comp .badge-prioridade.prio-vip {
+  background: var(--color-ink-soft);
+  color: #fafafa;
+}
+
+.comp .badge-prioridade.prio-delivery {
+  background: transparent;
+  border-color: var(--color-hairline-forte);
+}
+
+/* Legenda dos pedidos */
+.comp .legenda-pedidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.comp .item-legenda {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: default;
+  transition: border-color 0.15s ease;
+}
+
+.comp .item-legenda.destaque-pedido {
+  border-color: var(--color-ink);
+}
+
+.comp .bolinha-legenda {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.comp tr.destaque-pedido {
+  background: var(--color-surface-alt);
+}
+
+/* Gantts empilhados */
+.comp .linha-gantt,
+.comp .regua-tempo-bloco {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.comp .linha-gantt {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.comp .gantt-rotulo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.comp .algoritmo-ident {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comp .algoritmo-sigla {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.comp .algoritmo-tipo {
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-mid-gray);
+  background: var(--color-canvas);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.comp .ordem-fogao {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-mid-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comp .gantt-trilho-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.comp .gantt-trilho {
+  position: relative;
+  height: 40px;
+  background: var(--color-canvas);
+  border-radius: var(--radius-nested);
+  overflow: hidden;
+}
+
+/* Bloco do Gantt: 2px de folga entre blocos vizinhos e cantos de 6px */
+.comp .gantt-bloco {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid var(--color-canvas);
+  border-radius: var(--radius-small);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: default;
+  user-select: none;
+  transition: filter 0.15s ease;
+}
+
+.comp .gantt-bloco:hover {
+  filter: brightness(1.08);
+  z-index: 5;
+}
+
+.comp .gantt-bloco.destaque-pedido {
+  box-shadow: inset 0 0 0 2px var(--color-ink);
+  z-index: 6;
+}
+
+.comp .gantt-bloco-texto {
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Linha do instante atual */
+.comp .gantt-agora {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--color-ember);
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* Régua de tempo */
+.comp .regua-tempo-bloco {
+  padding-top: 10px;
+}
+
+.comp .regua-rotulo {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-mid-gray);
+}
+
+.comp .regua-trilho-wrapper {
+  position: relative;
+}
+
+.comp .regua-marcas {
+  position: relative;
+  height: 28px;
+}
+
+.comp .regua-ponto {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.comp .regua-traco {
+  width: 1px;
+  height: 5px;
+  background: var(--color-hairline-forte);
+}
+
+.comp .regua-traco.marcador-principal {
+  height: 8px;
+  background: var(--color-mid-gray);
+}
+
+.comp .regua-numero {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-mid-gray);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tabela de métricas */
+.comp .tabela-metricas td {
+  font-variant-numeric: tabular-nums;
+}
+
+.comp .col-algoritmo {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.comp .prontos-aovivo {
+  margin-left: 6px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-mid-gray);
+  background: var(--color-canvas);
+  border-radius: var(--radius-pill);
+}
+
+.comp .melhor-valor {
+  font-weight: 600;
+  background: var(--color-surface-alt);
+}
+
+.comp .badge-melhor {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fafafa;
+  background: var(--color-ink-soft);
+  border-radius: var(--radius-pill);
+  vertical-align: middle;
+}
+
+/* Responsividade */
+@media (max-width: 860px) {
+  .comp .linha-gantt,
+  .comp .regua-tempo-bloco {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .comp .regua-rotulo {
+    display: none;
+  }
+  .comp .relogio-aovivo {
+    margin-left: 0;
+    align-items: flex-start;
+  }
+}

@@ -3,9 +3,13 @@
 // e usar o forno é a região crítica. Com o mutex desligado acontece uma
 // condição de corrida; com o mutex ligado, há exclusão mútua.
 //
-// A tela não usa threads nem temporizadores para a lógica: no início, a
-// função gerarHistorico() calcula o estado da cozinha em cada passo e guarda
-// tudo numa lista. Avançar e voltar é só mudar o índice dessa lista.
+// A tela não usa threads nem temporizadores para a lógica: cada passo é
+// calculado por executarPasso() e guardado numa lista (o histórico). Avançar
+// e voltar é só mudar o índice dessa lista.
+//
+// Quem executa cada passo depende de quem faz o papel de escalonador: o
+// revezamento fixo, um sorteio ou a própria turma, clicando no cozinheiro.
+// Sem o mutex, o resultado muda conforme essa ordem.
 
 const ASSAR_INSTANTES = 3;
 
@@ -62,23 +66,40 @@ function estadoInicial(comMutex) {
   };
 }
 
-// Escolhe quem executa: revezamento entre os cozinheiros que não estão
-// bloqueados nem terminados, como um escalonador Round Robin com quantum 1.
+// Quem pode receber a vez: os cozinheiros que não estão bloqueados nem terminados.
+function candidatosDaVez(estado) {
+  return estado.cozinheiros.filter((c) => c.estado !== "bloqueado" && c.estado !== "terminado");
+}
+
+// As formas de escolher quem executa recebem o estado e quem executou por
+// último, e devolvem um cozinheiro (ou null se ninguém pode executar).
+
+// Revezamento entre os candidatos, como um escalonador Round Robin com quantum 1.
 function escolherVez(estado, ultimo) {
-  const candidatos = estado.cozinheiros.filter(
-    (c) => c.estado !== "bloqueado" && c.estado !== "terminado"
-  );
+  const candidatos = candidatosDaVez(estado);
   if (candidatos.length === 0) return null;
   if (candidatos.length === 1) return candidatos[0];
   const outro = candidatos.find((c) => c.id !== ultimo);
   return outro || candidatos[0];
 }
 
+// Sorteio entre os candidatos.
+function escolherAoAcaso(estado) {
+  const candidatos = candidatosDaVez(estado);
+  if (candidatos.length === 0) return null;
+  return candidatos[Math.floor(Math.random() * candidatos.length)];
+}
+
+// Escolha feita pela turma: dá a vez ao cozinheiro indicado, se ele puder executar.
+function escolherCozinheiro(id) {
+  return (estado) => candidatosDaVez(estado).find((c) => c.id === id) || null;
+}
+
 function primeiroNome(c) {
   return c.nome.split(" ")[1];
 }
 
-function executarPasso(anterior, ultimo) {
+function executarPasso(anterior, ultimo, escolher = escolherVez) {
   const e = copiar(anterior);
   e.passo += 1;
   const programa = e.comMutex ? PROGRAMAS.comMutex : PROGRAMAS.semMutex;
@@ -88,7 +109,7 @@ function executarPasso(anterior, ultimo) {
     if (c.estado === "executando") c.estado = "pronto";
   });
 
-  const c = escolherVez(e, ultimo);
+  const c = escolher(e, ultimo);
   if (!c) {
     e.fim = true;
     e.vez = null;
@@ -184,16 +205,18 @@ function executarPasso(anterior, ultimo) {
     e.fim = true;
     e.mensagem += e.comMutex
       ? " Fim: o mutex garantiu que só um cozinheiro usasse o forno por vez."
-      : "";
+      : " Fim: os dois pratos saíram certos, mas foi sorte. Ninguém foi interrompido entre olhar e colocar.";
   }
   return e;
 }
 
-function gerarHistorico(comMutex) {
+// Calcula o serviço inteiro de uma vez (revezamento ou sorteio).
+function gerarHistorico(comMutex, escolher = escolherVez) {
   const historico = [estadoInicial(comMutex)];
   let ultimo = null;
-  while (!historico[historico.length - 1].fim && historico.length < 100) {
-    const prox = executarPasso(historico[historico.length - 1], ultimo);
+  // No sorteio, quem espera o forno pode olhar muitas vezes; o limite só evita laço infinito.
+  while (!historico[historico.length - 1].fim && historico.length < 300) {
+    const prox = executarPasso(historico[historico.length - 1], ultimo, escolher);
     if (prox.vez) ultimo = prox.vez;
     historico.push(prox);
   }
@@ -215,6 +238,7 @@ const tela = {
   historico: [],
   indice: 0,
   timer: null,
+  politica: "turma", // quem escolhe a vez: turma | sorteio | revezamento
 };
 
 function el(id) {
@@ -224,7 +248,16 @@ function el(id) {
 function iniciar() {
   const comMutex = el("mutex").checked;
   pararAuto();
-  tela.historico = gerarHistorico(comMutex);
+  if (tela.politica === "turma") {
+    // A turma decide passo a passo, então o histórico cresce a cada escolha.
+    const inicial = estadoInicial(comMutex);
+    inicial.mensagem =
+      `${comMutex ? "Mutex ligado" : "Mutex desligado"}. Vocês são o escalonador: ` +
+      `clique em "Dar a vez" (ou aperte A / B) para escolher quem executa a próxima linha.`;
+    tela.historico = [inicial];
+  } else {
+    tela.historico = gerarHistorico(comMutex, tela.politica === "sorteio" ? escolherAoAcaso : escolherVez);
+  }
   tela.indice = 0;
   el("rotulo-mutex").textContent = comMutex ? "Mutex ligado" : "Mutex desligado";
   desenhar();
@@ -303,7 +336,10 @@ function desenhar() {
   estado.cozinheiros.forEach((c) => desenharCozinheiro(c, estado));
   desenharForno(estado);
 
-  el("passo").textContent = `Passo ${estado.passo} de ${tela.historico.length - 1}`;
+  const turma = tela.politica === "turma";
+  el("passo").textContent = turma
+    ? `Passo ${estado.passo}`
+    : `Passo ${estado.passo} de ${tela.historico.length - 1}`;
   el("mensagem").textContent = estado.mensagem;
   el("mensagem").classList.toggle("erro", estado.erro);
 
@@ -313,14 +349,31 @@ function desenhar() {
   const resumo = el("resumo");
   resumo.hidden = !estado.fim;
   if (estado.fim) {
-    resumo.className = "resumo " + (estado.erro ? "ruim" : "bom");
-    resumo.innerHTML = estado.erro
-      ? "<strong>Condição de corrida.</strong> Sem o mutex, verificar e colocar são dois passos separados. " +
+    if (estado.erro) {
+      resumo.className = "resumo ruim";
+      resumo.innerHTML =
+        "<strong>Condição de corrida.</strong> Sem o mutex, verificar e colocar são dois passos separados. " +
         "O escalonador trocou de cozinheiro entre eles, e os dois entraram na região crítica juntos. " +
-        "Ligue o mutex e rode de novo."
-      : "<strong>Exclusão mútua.</strong> O lock deixou só um cozinheiro na região crítica por vez. " +
+        "Ligue o mutex e rode de novo.";
+    } else if (estado.comMutex) {
+      resumo.className = "resumo bom";
+      resumo.innerHTML =
+        "<strong>Exclusão mútua.</strong> O lock deixou só um cozinheiro na região crítica por vez. " +
         "O outro ficou bloqueado, sem disputar a vez de executar, até o unlock. Os dois pratos saíram certos.";
+    } else {
+      resumo.className = "resumo sorte";
+      resumo.innerHTML =
+        "<strong>Deu certo, por sorte.</strong> Sem o mutex nada impede a troca de cozinheiro entre olhar e " +
+        "colocar; desta vez ela só não aconteceu. Reinicie e tente outra ordem.";
+    }
   }
+
+  el("btn-proximo").hidden = turma;
+  el("btn-auto").hidden = turma;
+  document.querySelectorAll(".btn-vez").forEach((botao) => {
+    botao.hidden = !turma;
+    botao.disabled = estado.fim || !escolherCozinheiro(botao.dataset.coz)(estado);
+  });
 
   el("btn-voltar").disabled = tela.indice === 0;
   el("btn-proximo").disabled = tela.indice === tela.historico.length - 1;
@@ -333,6 +386,27 @@ function proximo() {
     tela.indice += 1;
     desenhar();
   }
+}
+
+// A turma escolhe quem executa. Se voltou alguns passos, a escolha nova
+// descarta os passos que vinham depois.
+function darVez(id) {
+  if (tela.politica !== "turma") return;
+  const atual = tela.historico[tela.indice];
+  const escolher = escolherCozinheiro(id);
+  if (atual.fim || !escolher(atual)) return;
+  tela.historico = tela.historico.slice(0, tela.indice + 1);
+  tela.historico.push(executarPasso(atual, atual.vez, escolher));
+  tela.indice += 1;
+  desenhar();
+}
+
+function definirPolitica(politica) {
+  tela.politica = politica;
+  document.querySelectorAll("[data-politica]").forEach((b) => {
+    b.setAttribute("aria-pressed", String(b.dataset.politica === politica));
+  });
+  iniciar();
 }
 
 function voltar() {
@@ -366,14 +440,30 @@ if (typeof document !== "undefined") {
     el("btn-voltar").addEventListener("click", voltar);
     el("btn-reiniciar").addEventListener("click", iniciar);
     el("btn-auto").addEventListener("click", alternarAuto);
+    document.querySelectorAll("[data-politica]").forEach((b) => {
+      b.addEventListener("click", () => definirPolitica(b.dataset.politica));
+    });
+    document.querySelectorAll(".btn-vez").forEach((b) => {
+      b.addEventListener("click", () => darVez(b.dataset.coz));
+    });
     document.addEventListener("keydown", (ev) => {
+      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
       if (ev.key === "ArrowRight") proximo();
       if (ev.key === "ArrowLeft") voltar();
+      if (ev.key === "a" || ev.key === "A") darVez("A");
+      if (ev.key === "b" || ev.key === "B") darVez("B");
     });
     iniciar();
   });
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { gerarHistorico, PROGRAMAS };
+  module.exports = {
+    gerarHistorico,
+    executarPasso,
+    escolherVez,
+    escolherAoAcaso,
+    escolherCozinheiro,
+    PROGRAMAS,
+  };
 }
