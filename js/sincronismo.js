@@ -223,16 +223,6 @@ function gerarHistorico(comMutex, escolher = escolherVez) {
   return historico;
 }
 
-// Roda vários serviços com o sorteio e conta em quantos os pratos estragaram.
-function contarEstragos(vezes, comMutex) {
-  let estragados = 0;
-  for (let i = 0; i < vezes; i++) {
-    const historico = gerarHistorico(comMutex, escolherAoAcaso);
-    if (historico[historico.length - 1].erro) estragados += 1;
-  }
-  return estragados;
-}
-
 // ---------------------------------------------------------------------------
 // Interface
 // ---------------------------------------------------------------------------
@@ -419,19 +409,6 @@ function definirPolitica(politica) {
   iniciar();
 }
 
-// Mostra, em muitos serviços sorteados, quantos estragam com e sem o mutex.
-function rodarExperimento() {
-  const vezes = 100;
-  el("experimento-resultado").hidden = false;
-  mostrarBarra("sem", contarEstragos(vezes, false), vezes);
-  mostrarBarra("com", contarEstragos(vezes, true), vezes);
-}
-
-function mostrarBarra(id, estragados, vezes) {
-  el("barra-" + id).style.width = `${(estragados / vezes) * 100}%`;
-  el("taxa-" + id).textContent = `${estragados} de ${vezes} estragaram`;
-}
-
 function voltar() {
   pararAuto();
   if (tela.indice > 0) {
@@ -463,7 +440,6 @@ if (typeof document !== "undefined") {
     el("btn-voltar").addEventListener("click", voltar);
     el("btn-reiniciar").addEventListener("click", iniciar);
     el("btn-auto").addEventListener("click", alternarAuto);
-    el("btn-100").addEventListener("click", rodarExperimento);
     document.querySelectorAll("[data-politica]").forEach((b) => {
       b.addEventListener("click", () => definirPolitica(b.dataset.politica));
     });
@@ -488,7 +464,6 @@ if (typeof module !== "undefined") {
     escolherVez,
     escolherAoAcaso,
     escolherCozinheiro,
-    contarEstragos,
     PROGRAMAS,
   };
 }

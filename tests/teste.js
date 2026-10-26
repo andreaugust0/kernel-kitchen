@@ -9,7 +9,7 @@ if (typeof require !== "undefined" && typeof fcfs === "undefined") {
   const path = require("path");
   const vm = require("vm");
   for (const arquivo of ["cenarios.js", "algoritmos.js", "metricas.js"]) {
-    vm.runInThisContext(fs.readFileSync(path.join(__dirname, arquivo), "utf8"), { filename: arquivo });
+    vm.runInThisContext(fs.readFileSync(path.join(__dirname, "..", "js", arquivo), "utf8"), { filename: arquivo });
   }
 }
 

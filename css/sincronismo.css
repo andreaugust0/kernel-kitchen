@@ -193,31 +193,8 @@
 .sinc .resumo.ruim { background: var(--color-ember-soft); border-color: #fecaca; }
 .sinc .resumo.sorte { background: var(--color-surface-alt); border-style: dashed; border-color: var(--color-mid-gray); }
 
-/* Experimento com 100 serviços sorteados */
-.sinc .experimento {
-  margin-top: 16px;
-  padding: 20px 24px;
-  background: var(--color-paper);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-cards);
-  box-shadow: var(--shadow-card);
-}
-.sinc .experimento-topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-.sinc .experimento h2 { font-size: 18px; letter-spacing: -0.25px; }
-.sinc .experimento-resultado { display: grid; gap: 12px; margin-top: 18px; }
-.sinc .barra-linha { display: grid; grid-template-columns: 100px 1fr 170px; align-items: center; gap: 12px; }
-.sinc .barra-linha span { font-weight: 500; }
-.sinc .barra { height: 10px; background: var(--color-canvas); border-radius: 999px; overflow: hidden; }
-.sinc .barra-preenchida { width: 0; height: 100%; border-radius: 999px; transition: width 0.6s ease; }
-#barra-sem { background: var(--color-ember); }
-#barra-com { background: var(--color-ink); }
-.sinc .barra-linha strong { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
-#taxa-sem { color: var(--color-ember); }
-
 @media (max-width: 860px) {
   .sinc .cozinha { grid-template-columns: 1fr; }
   .sinc .forno { order: -1; }
   .sinc .passo { margin-left: 0; }
-  .sinc .barra-linha { grid-template-columns: 80px 1fr; }
-  .sinc .barra-linha strong { grid-column: 2; }
 }

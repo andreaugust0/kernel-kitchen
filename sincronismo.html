@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sincronismo · Chef Escalonador</title>
-  <!-- estilo.css é o estilo comum das telas (design system em docs/design.md). sincronismo.css só tem o que é desta tela. -->
+  <!-- estilo.css é o estilo comum das telas. sincronismo.css só tem o que é desta tela. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="estilo.css">
-  <link rel="stylesheet" href="sincronismo.css">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/sincronismo.css">
 </head>
 <body class="sinc">
   <header class="topo">
@@ -94,27 +94,8 @@
     </section>
 
     <p id="resumo" class="resumo" hidden></p>
-
-    <section class="experimento" aria-label="Muitos serviços sorteados">
-      <div class="experimento-topo">
-        <h2>E se rodar 100 vezes?</h2>
-        <button id="btn-100" type="button" class="principal">Rodar 100 serviços sorteados</button>
-      </div>
-      <div id="experimento-resultado" class="experimento-resultado" hidden>
-        <div class="barra-linha">
-          <span>Sem mutex</span>
-          <div class="barra"><div id="barra-sem" class="barra-preenchida"></div></div>
-          <strong id="taxa-sem"></strong>
-        </div>
-        <div class="barra-linha">
-          <span>Com mutex</span>
-          <div class="barra"><div id="barra-com" class="barra-preenchida"></div></div>
-          <strong id="taxa-com"></strong>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <script src="sincronismo.js"></script>
+  <script src="js/sincronismo.js"></script>
 </body>
 </html>
